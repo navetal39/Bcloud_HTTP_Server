@@ -1,0 +1,8 @@
+lower_case_with_underscore - for functions, methods, attributes, variables.
+
+ALL_CAPS_WITH_UNDERSCORE - for constants.
+
+MixedCase - for classes, libs, packages.
+
+
+Keep that and the code will look good! :)
