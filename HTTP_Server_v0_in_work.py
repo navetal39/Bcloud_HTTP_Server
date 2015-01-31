@@ -14,6 +14,8 @@ from threading import Thread
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 MOVED = {'/':'Pages/index.htm'}
+ERROR_404_PATH="Pages/Error404.html"
+STATUS_LINES={"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n", "302":"HTTP/1.1 302 Found\r\n" }
 
 
 # Methods: #
@@ -77,6 +79,17 @@ def parse_req(req):
 def path_exists(path):
     pass
 
+def send_page(path, client_socket, status):
+    if status == "301":#Unfinished... You can try to finish it if you feel like it!
+        extra_line="Location: {}".format(MOVED[path])
+        data=""
+    else:
+        data=open(path, 'r').read()
+    headers = ".:.\r\n"
+    status_line=STATUS_LINES(status)
+    secure_send(client_socket, status_line+headers+"\r\n"+data)
+    
+
 ## General Methods: ##
 def do_work():
     client_scoket, client_addr = q.get()
@@ -88,10 +101,14 @@ def do_work():
         parsed_url=urlparse.urlparse(url)
         path=parsed_url.path
         if path_exists(path):
-            data = open(path, 'r').read()
-            headers = ".:.\r\n"
-            status_line = "HTTP/1.1 200 OK\r\n"
-            secure_send(client_socket, status_line+headers+"\r\n"+data)
+            status="200"
+        else:
+            if path in MOVED.keys:
+                status="301"
+            else:
+                status="404"
+                path=ERROR_404_PATH
+        send_page(path, client_socket, status)
 
     elif req_type == "POST":
         pass
