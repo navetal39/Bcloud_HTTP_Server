@@ -14,9 +14,9 @@ from os.path import isfile
 # Constants: #
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
-MOVED = {'/':'Pages/index.htm'}
-ERROR_404_PATH = "Pages/Error404.html"
-ERROR_500_PATH = "Pages/Error500.html"
+MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
+ERROR_404_PATH = "Pages/Error404.htm"
+ERROR_500_PATH = "Pages/Error500.htm"
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
               "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
 
@@ -27,17 +27,19 @@ def secure_accept(server_socket):
     ''' This method needs to accept a new client and establish a secure TCP connection with him (over SSL/TLS).
         It will return exacly what the normal accept method returns UNLESS we will need to change it.
     '''
-    pass
+    cs,ca = server_socket.accept()
+    return (cs, ca)
 
 def secure_recv(sock):
     ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
     '''
-    pass
+    return sock.recv(5000) #Need to do the thing with the length...
 
 def secure_send(sock, mess):
     ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
     '''
-    pass
+    print "sending {m}".format(m=mess) # -For The Record-
+    sock.send(mess)
 
 ## Small Help Methods: ##
 def decide_type(req):
@@ -94,22 +96,23 @@ def send_status(path, sock, status):
         data = open(path, 'r').read()
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
     status_line = STATUS_LINES[status]
-    secure_send(client_socket, status_line+headers+"\r\n"+data)
+    secure_send(sock, status_line+headers+"\r\n"+data)
     
 
 ## General Methods: ##
 def do_work():
-    client_scoket, client_addr = q.get()
-    req = secure_recv(cliect_socket)
+    client_socket, client_addr = q.get()
+    req = secure_recv(client_socket)
     req_type = decide_type(req)
     parsed_request = parse_req(req)
     if req_type == "GET":
+        print "have a 'GET' request\n", req # -For The Record-
         url = parsed_request[0]['url']
         parsed_url = urlparse.urlparse(url)
-        path = parsed_url.path
+        path = parsed_url.path.lstrip('/')
         if path_exists(path):
             status = "200"
-        elif path in MOVED.keys:
+        elif path in MOVED.keys():
             status = "301"
         else:
             status = "404"
@@ -128,7 +131,7 @@ def do_work():
     
 def make_threads_and_queue(num, size):
     global q
-    q = Queue(size)
+    q = Queue.Queue(size)
     for i in xrange(num):
         t = Thread(target=do_work)
         t.deamon = True
@@ -136,12 +139,22 @@ def make_threads_and_queue(num, size):
 
 ## Main Activity Method: ##
 def main():
+    port=80
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    server_socket.bind(('0.0.0.0',80))
+    while True:
+        try:
+            server_socket.bind(('0.0.0.0',port))
+            break
+        except:
+            port+=1
     server_socket.listen(10)
+    print "Running... on port {}".format(port) # -For The Record-
 
     while True:
         client_socket, client_addr = secure_accept(server_socket)
+        print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
-    
+
+
+main()
