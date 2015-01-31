@@ -7,6 +7,7 @@
 # Imports: #
 import re, urlparse, socket, Queue
 from threading import Thread
+from os.path import isfile
 
 
 
@@ -14,8 +15,10 @@ from threading import Thread
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 MOVED = {'/':'Pages/index.htm'}
-ERROR_404_PATH="Pages/Error404.html"
-STATUS_LINES={"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n", "302":"HTTP/1.1 302 Found\r\n" }
+ERROR_404_PATH = "Pages/Error404.html"
+ERROR_500_PATH = "Pages/Error500.html"
+STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
+              "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
 
 
 # Methods: #
@@ -32,7 +35,7 @@ def secure_recv(sock):
     pass
 
 def secure_send(sock, mess):
-    ''' This method needs to...
+    ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
     '''
     pass
 
@@ -76,18 +79,21 @@ def parse_req(req):
     parsed_status_line['version'] = parts[2]
 
     return (parsed_status_line, headers, content)
-        
-def path_exists(path):
-    pass
 
-def send_page(path, client_socket, status):
-    if status == "301":#Unfinished... You can try to finish it if you feel like it!
-        extra_line="Location: {}".format(MOVED[path])
-        data=""
+def path_exists(path):
+    ''' For conventions, :P.
+    '''
+    return isfile(path)
+
+def send_status(path, sock, status):
+    if status == "301":
+        extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
+        data = ""
     else:
-        data=open(path, 'r').read()
-    headers = ".:.\r\n"
-    status_line=STATUS_LINES(status)
+        extra_header = ""
+        data = open(path, 'r').read()
+    headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
+    status_line = STATUS_LINES[status]
     secure_send(client_socket, status_line+headers+"\r\n"+data)
     
 
@@ -96,26 +102,29 @@ def do_work():
     client_scoket, client_addr = q.get()
     req = secure_recv(cliect_socket)
     req_type = decide_type(req)
-    parsed_request=parse_req(req)
+    parsed_request = parse_req(req)
     if req_type == "GET":
         url = parsed_request[0]['url']
-        parsed_url=urlparse.urlparse(url)
-        path=parsed_url.path
+        parsed_url = urlparse.urlparse(url)
+        path = parsed_url.path
         if path_exists(path):
-            status="200"
+            status = "200"
+        elif path in MOVED.keys:
+            status = "301"
         else:
-            if path in MOVED.keys:
-                status="301"
-            else:
-                status="404"
-                path=ERROR_404_PATH
-        send_page(path, client_socket, status)
+            status = "404"
+            path = ERROR_404_PATH
+        send_status(path, client_socket, status)
+        q.task_done()
 
     elif req_type == "POST":
         pass
 
     else: # That means it is an Internal Server Error (500)
-        pass
+        status = "500"
+        path = ERROR_500_PATH
+        send_status(path, client_socket, status)
+        q.task_done()
     
 def make_threads_and_queue(num, size):
     global q
