@@ -1,14 +1,10 @@
-Tamir:
-"lower_case_with_underscore - for functions, methods, attributes, variables.
+lower_case_with_underscore - for functions, methods, attributes, variables.
 
 ALL_CAPS_WITH_UNDERSCORE - for constants.
 
 MixedCase - for classes, libs, packages.
 
-*It's best to put a space before and after a sign a these '='/'+'/'=='/'-'/etc.
+*It's best to put a space before and after a sign as these '='/'+'/'=='/'-'/etc.
 
 
-Keep that and the code will look good! :)"
-
-
-Nave: "Yeah, Yeah, What ever..."
+Keep that and the code will look good! :)
