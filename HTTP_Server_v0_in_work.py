@@ -82,16 +82,16 @@ def do_work():
     client_scoket, client_addr = q.get()
     req = secure_recv(cliect_socket)
     req_type = decide_type(req)
+    parsed_request=parse_req(req)
     if req_type == "GET":
-        url = parse_req(req)[0]['url']
-        parsed=urlparse.urlparse(url)
-        path=parsed.path
+        url = parsed_request[0]['url']
+        parsed_url=urlparse.urlparse(url)
+        path=parsed_url.path
         if path_exists(path):
             data = open(path, 'r').read()
             headers = ".:.\r\n"
             status_line = "HTTP/1.1 200 OK\r\n"
             secure_send(client_socket, status_line+headers+"\r\n"+data)
-
 
     elif req_type == "POST":
         pass
@@ -109,7 +109,7 @@ def make_threads_and_queue(num, size):
 
 ## Main Activity Method: ##
 def main():
-    make_threads_and_queue(NUM_OF_THREADS)
+    make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     server_socket.bind(('0.0.0.0',80))
     server_socket.listen(10)
