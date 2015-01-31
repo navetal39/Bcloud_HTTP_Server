@@ -5,10 +5,7 @@
 
 
 # Imports: #
-import re
-import urlparse
-import socket
-import Queue
+import re, urlparse, socket, Queue
 from threading import Thread
 
 
@@ -63,8 +60,7 @@ def parse_req(req):
     header, content = req.split('\r\n\r\n')
     header_lines_list = header.split('\r\n')
     status_line = header_lines_list[0]
-    header_lines_list.remove(status_line)
-    headers_list = header_lines_list
+    headers_list = header_lines_list.remove(status_line)
     headers = dict()
     for h in headers_list:
         name, cont = h.split(': ')
@@ -78,7 +74,7 @@ def parse_req(req):
 
     return (parsed_status_line, headers, content)
         
-def is_exist(path):
+def path_exists(path):
     pass
 
 ## General Methods: ##
@@ -90,7 +86,7 @@ def do_work():
         url = parse_req(req)[0]['url']
         parsed=urlparse.urlparse(url)
         path=parsed.path
-        if is_exist(path):
+        if path_exists(path):
             data = open(path, 'r').read()
             headers = ".:.\r\n"
             status_line = "HTTP/1.1 200 OK\r\n"
