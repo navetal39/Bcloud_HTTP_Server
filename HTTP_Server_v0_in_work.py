@@ -62,7 +62,8 @@ def parse_req(req):
     header, content = req.split('\r\n\r\n')
     header_lines_list = header.split('\r\n')
     status_line = header_lines_list[0]
-    headers_list = header_lines_list.remove(status_line)
+    header_lines_list.remove(status_line)
+    headers_list = header_lines_list
     headers = dict()
     for h in headers_list:
         name, cont = h.split(': ')
