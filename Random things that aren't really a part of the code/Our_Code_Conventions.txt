@@ -1,14 +1,22 @@
-lower_case_with_underscore - for functions, methods, attributes, variables.
+* Naming Conventions:
+	- lower_case_with_underscore - for functions, methods, attributes, variables.
+   	- ALL_CAPS_WITH_UNDERSCORE - for constants.
+   	- MixedCase - for classes, libs, packages.
 
-ALL_CAPS_WITH_UNDERSCORE - for constants.
+* Commenting Conventions:
+	- When commenting, put a space between the comment sign (#/'''/"""/etc.) and the actual comment.
+	- In addition, if you put a comment directly after a line of code, seperate the code and the comment sign with another space.
+	- For Example:
+		# Main Work:
+		l = list() # creat a new list.
+	- Lines that are 'for the record' will be marked with a comment like so: # -For The Record-
 
-MixedCase - for classes, libs, packages.
-
-
-*Befor a comment in the same line you comment on put a space and start the comment after another space. [Worded in stammering, will be repaired when I have the power]. For example:
-l = list() # creat a new list.
-*Lines that are 'for the record' will be marked with a comment like so: # -For The Record-
-*It's best to put a space before and after a sign as these '='/'=='/'!='/'>'/etc.
+* Other Conventions:
+	- It's best to put a space before and after a sign as these '='/'=='/'!='/'>'/etc.
+	- At the end of EVERY text file you MUST put our moto! (see the end of this file for the moto).
 
 
 Keep that and the code will look good! :)
+
+Exciting. Satisfying. Period.
+.
