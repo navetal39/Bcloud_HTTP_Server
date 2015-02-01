@@ -3,7 +3,8 @@ lower_case_with_underscore - for functions, methods, attributes, variables.
 ALL_CAPS_WITH_UNDERSCORE - for constants.
 
 MixedCase - for classes, libs, packages.
- 
+
+
 *Befor a comment in the same line you comment on put a space and start the comment after another space. [Worded in stammering, will be repaired when I have the power]. For example:
 l = list() # creat a new list.
 *Lines that are 'for the record' will be marked with a comment like so: # -For The Record-
