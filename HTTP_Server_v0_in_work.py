@@ -4,6 +4,7 @@
 # ===================================
 
 
+
 # Imports: #
 import re, urlparse, socket, Queue
 from threading import Thread
@@ -19,6 +20,7 @@ ERROR_404_PATH = "Pages/Error404.htm"
 ERROR_500_PATH = "Pages/Error500.htm"
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
               "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
+
 
 
 # Methods: #
@@ -45,6 +47,7 @@ def secure_close(sock):
     ''' This method needs to...
     '''
     sock.close()
+
 
 ## Small Help Methods: ##
 def decide_type(req):
@@ -132,7 +135,16 @@ def do_work():
                 send_status(path, client_socket, status, read_type)
 
             elif req_type == "POST":
-                pass
+                form_content = parsed_request[2]
+                params = get_params(form_content)
+                form_type = decite_form_type(params)
+                if form_type == "R":
+                    pass
+                elif form_type == "D":
+                    pass
+                elif form_type == "A":
+                    pass
+            
         except: # That's an Internal Server Error (500)
             status = "500"
             path = ERROR_500_PATH
@@ -146,6 +158,7 @@ def make_threads_and_queue(num, size):
         t = Thread(target=do_work)
         t.deamon = True
         t.start()
+
 
 ## Main Activity Method: ##
 def main():
