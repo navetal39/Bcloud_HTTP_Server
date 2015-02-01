@@ -41,20 +41,22 @@ def secure_send(sock, mess):
     print "sending {m}".format(m=mess) # -For The Record-
     sock.send(mess)
 
+def secure_close(sock):
+    ''' This method needs to...
+    '''
+    sock.close()
+
 ## Small Help Methods: ##
 def decide_type(req):
     GET_request_pattern = "GET .* HTTP/1.1\r\n.*"
     POST_request_pattern = "POST .* HTTP/1.1\r\n.*"
     
-    try:
-        if re.match(GET_request_pattern, req):
-            return "GET"
-        elif re.match(POST_request_pattern, req):
-            return "POST"
-        else:
-            raise
-    except: # That's an Internal Server Error (500)
-        return "500"
+    if re.match(GET_request_pattern, req):
+        return "GET"
+    elif re.match(POST_request_pattern, req):
+        return "POST"
+    else:  # That's an Internal Server Error (500)
+        raise
 
 def parse_req(req):
     ''' This method receives a http request and parse it.
@@ -87,13 +89,13 @@ def path_exists(path):
     '''
     return isfile(path)
 
-def send_status(path, sock, status):
+def send_status(path, sock, status, read_type):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
     else:
         extra_header = ""
-        data = open(path, 'r').read()
+        data = open(path, read_type).read()
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
     status_line = STATUS_LINES[status]
     secure_send(sock, status_line+headers+"\r\n"+data)
@@ -102,33 +104,41 @@ def send_status(path, sock, status):
 ## General Methods: ##
 def do_work():
     client_socket, client_addr = q.get()
+    read_type = "r"
     req = secure_recv(client_socket)
-    req_type = decide_type(req)
-    parsed_request = parse_req(req)
-    if req_type == "GET":
-        print "have a 'GET' request\n", req # -For The Record-
-        url = parsed_request[0]['url']
-        parsed_url = urlparse.urlparse(url)
-        path = parsed_url.path.lstrip('/')
-        if path_exists(path):
-            status = "200"
-        elif path in MOVED.keys():
-            status = "301"
-        else:
-            status = "404"
-            path = ERROR_404_PATH
-        send_status(path, client_socket, status)
+    if req == "":
+        secure_close(client_socket)
+        print "Closed connection"
         q.task_done()
+    else:
+        try:
+            req_type = decide_type(req)
+            parsed_request = parse_req(req)
+            if req_type == "GET":
+                print "have a 'GET' request\n", req # -For The Record-
+                url = parsed_request[0]['url']
+                parsed_url = urlparse.urlparse(url)
+                path = parsed_url.path.lstrip('/')
+                if path == "favicon.ico":
+                    path = "Pages/favicon.ico"
+                    read_type = "rb"
+                if path_exists(path):
+                    status = "200"
+                elif path in MOVED.keys():
+                    status = "301"
+                else:
+                    status = "404"
+                    path = ERROR_404_PATH
+                send_status(path, client_socket, status, read_type)
 
-    elif req_type == "POST":
-        pass
-
-    else: # That means it is an Internal Server Error (500)
-        status = "500"
-        path = ERROR_500_PATH
-        send_status(path, client_socket, status)
-        q.task_done()
-    
+            elif req_type == "POST":
+                pass
+        except: # That's an Internal Server Error (500)
+            status = "500"
+            path = ERROR_500_PATH
+            send_status(path, client_socket, status)
+        
+        
 def make_threads_and_queue(num, size):
     global q
     q = Queue.Queue(size)
