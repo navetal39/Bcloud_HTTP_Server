@@ -122,19 +122,29 @@ def do_work():
                 url = parsed_request[0]['url']
                 parsed_url = urlparse.urlparse(url)
                 path = parsed_url.path.lstrip('/')
-                if path == "favicon.ico":
-                    path = "Pages/favicon.ico"
-                    read_type = "rb"
-                if path_exists(path):
-                    status = "200"
-                elif path in MOVED.keys():
-                    status = "301"
-                else:
-                    status = "404"
-                    path = ERROR_404_PATH
-                send_status(path, client_socket, status, read_type)
+                params = parsed_url.query
+                if params: #Download
+                    name, value = params.split("=")
+                    if name == "username":
+                        pass
+                    elif name == "is_approved":
+                        pass
+                
+                else: #Normal 'GET'
+                    if path == "favicon.ico":
+                        path = "Pages/favicon.ico"
+                        read_type = "rb"
+                    if path_exists(path):
+                        status = "200"
+                    elif path in MOVED.keys():
+                        status = "301"
+                    else:
+                        status = "404"
+                        path = ERROR_404_PATH
+                    send_status(path, client_socket, status, read_type)
 
-            elif req_type == "POST":
+
+            elif req_type == "POST": #Only registery
                 form_content = parsed_request[2]
                 params = get_params(form_content)
                 form_type = decite_form_type(params)
