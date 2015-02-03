@@ -20,6 +20,8 @@ ERROR_404_PATH = "Pages/Error404.htm"
 ERROR_500_PATH = "Pages/Error500.htm"
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
               "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
+NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm"
+EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
 
 
 
@@ -123,14 +125,22 @@ def do_work():
                 parsed_url = urlparse.urlparse(url)
                 path = parsed_url.path.lstrip('/')
                 params = parsed_url.query
-                if params: #Download
-                    name, value = params.split("=")
-                    if name == "username":
-                        pass
-                    elif name == "is_approved":
+                if params: # Download
+                    key, value = params.split("=") # Because there is ONLY one parameter, for sure.
+                    if key == "username": # Download first part.
+                        if not name_exists(value):
+                            path = NO_NAME_ERROR_PATH
+                            status = "200"
+                        if folder_empty(value):
+                            path = EMPTY_FOLDER_ERROR_PATH
+                            status = "200"
+                        date = get_last_update(value)
+                        path = LAST_UPDATE_FORM_PATH
+                        
+                    elif key == "is_approved": # Download second part.
                         pass
                 
-                else: #Normal 'GET'
+                else: # Normal 'GET'
                     if path == "favicon.ico":
                         path = "Pages/favicon.ico"
                         read_type = "rb"
@@ -141,24 +151,19 @@ def do_work():
                     else:
                         status = "404"
                         path = ERROR_404_PATH
-                    send_status(path, client_socket, status, read_type)
 
 
-            elif req_type == "POST": #Only registery
+            elif req_type == "POST": # Only registery
                 form_content = parsed_request[2]
                 params = get_params(form_content)
                 form_type = decite_form_type(params)
-                if form_type == "R":
-                    pass
-                elif form_type == "D":
-                    pass
-                elif form_type == "A":
-                    pass
+                pass
             
         except: # That's an Internal Server Error (500)
             status = "500"
             path = ERROR_500_PATH
-            send_status(path, client_socket, status)
+        finally:
+            send_status(path, client_socket, status, read_type)
         
         
 def make_threads_and_queue(num, size):
