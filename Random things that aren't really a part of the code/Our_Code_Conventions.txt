@@ -1,7 +1,8 @@
 * Naming Conventions:
 	- lower_case_with_underscore - for functions, methods, attributes, variables.
    	- ALL_CAPS_WITH_UNDERSCORE - for constants.
-   	- MixedCase - for classes, libs, packages.
+   	- MixedCase - for classes.
+	- Mixed_Case_With_Underscore - for libs, packages.
 
 * Commenting Conventions:
 	- When commenting, put a space between the comment sign (#/'''/"""/etc.) and the actual comment.
