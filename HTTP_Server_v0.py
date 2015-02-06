@@ -2,6 +2,13 @@
 # PreFirst version.
 # No Encryption nor https (tls/ssl).
 # ===================================
+'''
+TO DO:
+    1. Implement the method "get_last_update(name)".
+    2. Find how to add the last update to last update page, then implement it.
+    3. Finish the send folder part (Nave).
+    
+'''
 
 
 
@@ -13,15 +20,30 @@ from os.path import isfile
 
 
 # Constants: #
+## General: ##
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
-MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
+
+## Pahts: ##
+### Error paths: ###
 ERROR_404_PATH = "Pages/Error404.htm"
 ERROR_500_PATH = "Pages/Error500.htm"
-STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
-              "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
 NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm"
 EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
+NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm"
+### General paths: ###
+LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
+HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
+HE_SAID_YES_PATH = "Pages/???.htm" # Is that needed? Nave's part!
+SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
+
+## Other usefullness: ##
+STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
+                "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
+MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
+
+
+
 
 
 
@@ -50,6 +72,25 @@ def secure_close(sock):
     '''
     sock.close()
 
+
+## Help methods that need cummunication ##
+def get_last_update(name):
+    ''' returns the date of the last update of the public folder belongs to the username 'name' and a flag reflecting the request's
+        status (succses/no name/empty filder).
+        
+        Errors:
+            (1) No name - the flag "NO_NAME" is returned as the status.
+            (2) Empty folder - the flag "EMPTY" is returned as the status.
+            (3) Unknown other error - the flag "UNKNOWN" is returned as the status.
+    '''
+
+def send_folder(name):
+    ''' Nave's part!
+    '''
+
+def create_user(username, password):
+    ''' To be implemented, notethe flags...
+    '''
 
 ## Small Help Methods: ##
 def decide_type(req):
@@ -94,7 +135,7 @@ def path_exists(path):
     '''
     return isfile(path)
 
-def send_status(path, sock, status, read_type):
+def send_status(path, read_type, status, sock):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
@@ -104,66 +145,92 @@ def send_status(path, sock, status, read_type):
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
     status_line = STATUS_LINES[status]
     secure_send(sock, status_line+headers+"\r\n"+data)
+
+def get_fields_values(cont):
+    '''
+    '''
+    fields_values = dict()
+    fields = cont.split('&')
+    for field in fields:
+        name, value = field.split('=')
+        fields_values[name] = value
+
+    return fields_values
     
 
 ## General Methods: ##
 def do_work():
     client_socket, client_addr = q.get()
     read_type = "r"
-    req = secure_recv(client_socket)
-    if req == "":
-        secure_close(client_socket)
-        print "Closed connection"
-        q.task_done()
-    else:
-        try:
-            req_type = decide_type(req)
-            parsed_request = parse_req(req)
-            if req_type == "GET":
-                print "have a 'GET' request\n", req # -For The Record-
-                url = parsed_request[0]['url']
-                parsed_url = urlparse.urlparse(url)
-                path = parsed_url.path.lstrip('/')
-                params = parsed_url.query
-                if params: # Download
-                    key, value = params.split("=") # Because there is ONLY one parameter, for sure.
-                    if key == "username": # Download first part.
-                        if not name_exists(value):
-                            path = NO_NAME_ERROR_PATH
+    while True:
+        req = secure_recv(client_socket)
+        if req == "":
+            secure_close(client_socket)
+            print "Closed connection" # -For The Record-
+            q.task_done()
+        else:
+            try:
+                req_type = decide_type(req)
+                parsed_request = parse_req(req)
+                if req_type == "GET":
+                    print "have a 'GET' request\n", req # -For The Record-
+                    url = parsed_request[0]['url']
+                    parsed_url = urlparse.urlparse(url)
+                    path = parsed_url.path.lstrip('/')
+                    params = parsed_url.query
+                    if params: # Download
+                        key, value = params.split("=") # Because there is ONLY one parameter, for sure.
+                        if key == "username": # Download - first part.
+                            name = value # For the second part.
+                            stat, data = get_last_update(value)
+                            if stat == "NO_NAME":
+                                path = NO_NAME_ERROR_PATH
+                                status = "200"
+                            elif stat == "EMPTY":
+                                path = EMPTY_FOLDER_ERROR_PATH
+                                status = "200"
+                            elif stat == "OK":
+                                path = LAST_UPDATE_PLUS_PATH # Add last update...!
+                                status = "200"
+                            
+                        elif key == "is_approved": # Download - second part.
+                            if value == "YES": # Partial implementetion, Nave's part!!
+                                path = HE_SAID_YES_PATH
+                                status = "200"
+                                send_folder(name) # Nave's part!
+                            elif value == "NO":
+                                path = HE_GAVE_UP_PATH
+                                status = "200"
+                    
+                    else: # Normal 'GET'
+                        if path == "favicon.ico":
+                            path = "Pages/favicon.ico"
+                            read_type = "rb"
+                        if path_exists(path):
                             status = "200"
-                        if folder_empty(value):
-                            path = EMPTY_FOLDER_ERROR_PATH
-                            status = "200"
-                        date = get_last_update(value)
-                        path = LAST_UPDATE_FORM_PATH
-                        
-                    elif key == "is_approved": # Download second part.
-                        pass
-                
-                else: # Normal 'GET'
-                    if path == "favicon.ico":
-                        path = "Pages/favicon.ico"
-                        read_type = "rb"
-                    if path_exists(path):
+                        elif path in MOVED.keys():
+                            status = "301"
+                        else:
+                            status = "404"
+                            path = ERROR_404_PATH
+
+                elif req_type == "POST": # Only registery
+                    form_content = parsed_request[2]
+                    fields_dict = get_fields_values(form_content)
+                    stat = create_user(fields_dict['username'], fields_dict['password'])
+                    if stat == "NAME_IN_USE":
+                        path = NAME_IN_USE_ERROR_PATH
                         status = "200"
-                    elif path in MOVED.keys():
-                        status = "301"
-                    else:
-                        status = "404"
-                        path = ERROR_404_PATH
+                    elif stat == "OK":
+                        path = SIGN_UP_APPROVAL_PATH
+                        status = "200"
+                
+            except: # That's an Internal Server Error (500)
+                status = "500"
+                path = ERROR_500_PATH
 
-
-            elif req_type == "POST": # Only registery
-                form_content = parsed_request[2]
-                params = get_params(form_content)
-                form_type = decite_form_type(params)
-                pass
-            
-        except: # That's an Internal Server Error (500)
-            status = "500"
-            path = ERROR_500_PATH
-        finally:
-            send_status(path, client_socket, status, read_type)
+            finally:
+                send_status(path, read_type, status, client_socket)
         
         
 def make_threads_and_queue(num, size):
