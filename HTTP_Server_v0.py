@@ -87,11 +87,12 @@ def get_last_update(name):
         Errors:
             (1) No name - the flag "Unknown name" is returned as the status.
             (2) Empty folder - the flag "Empty folder" is returned as the status.
-            (3) Unknown other error - the flag "UNKNOWN" is returned as the status.
+            (3) Unknown other error - the flag "Unknown error" is returned as the status.
     '''
 def send_folder(sock, name):
     ''' need to be implemented!
     '''
+    # Temp stuff for testing. Remove when the actual code is written:
     f = open('Try/zipFile.zip', 'rb')
     cont = f.read()
     secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
@@ -203,6 +204,8 @@ def do_work():
                             elif stat == "Success":
                                 path = LAST_UPDATE_PLUS_PATH # Add last update...!
                                 status = "200"
+                            else:
+                                raise
                             
                         elif key == "is_approved": # Download - second part.
                             if value == "YES": # Partial implementetion, need to add distinguishing things with URI, etc.!
@@ -212,6 +215,9 @@ def do_work():
                             elif value == "NO":
                                 path = HE_GAVE_UP_PATH
                                 status = "200"
+                            else: #If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
+                                status = "404"
+                                path = ERROR_404_PATH
                     
                     else: # Normal 'GET'
                         if path == "favicon.ico":
