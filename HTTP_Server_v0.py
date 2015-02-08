@@ -7,6 +7,7 @@ TO DO:
     1. Implement the methods "get_last_update()", "send_folder()" and "create_user()".
     2. Find how to add the last update to last update page, then implement it.
     3. Add TLS!
+    4. Make the part that communicates with the main server it's own class (and object), just so it'll look better.
     
 '''
 
@@ -37,12 +38,17 @@ HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
 HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
+##Server-Server Communication: ##
+## Commented out until the main server-http server module will be set up and working. ##
+# SERVER_COM_IP="127.0.0.1"
+# SERVER_COM_PORT=3417
+# SERVER_COM_SOCKEt=socket.socket()
+# SERVER_COM_SOCKEt.connect((SERVER_COM_IP, SERVER_COM_PORT))
+
 ## Other usefullness: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
                 "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
 MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
-
-
 
 
 
@@ -83,7 +89,6 @@ def get_last_update(name):
             (2) Empty folder - the flag "Empty folder" is returned as the status.
             (3) Unknown other error - the flag "UNKNOWN" is returned as the status.
     '''
-
 def send_folder(sock, name):
     ''' need to be implemented!
     '''
