@@ -4,9 +4,9 @@
 # ===================================
 '''
 TO DO:
-    1. Implement the method "get_last_update(name)".
+    1. Implement the methods "get_last_update()", "send_folder()" and "create_user()".
     2. Find how to add the last update to last update page, then implement it.
-    3. Finish the send folder part (Nave).
+    3. Add TLS!
     
 '''
 
@@ -34,7 +34,7 @@ NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm"
 ### General paths: ###
 LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
 HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
-HE_SAID_YES_PATH = "Pages/???.htm" # Is that needed? Nave's part!
+HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
 ## Other usefullness: ##
@@ -79,14 +79,18 @@ def get_last_update(name):
         status (succses/no name/empty filder).
         
         Errors:
-            (1) No name - the flag "NO_NAME" is returned as the status.
-            (2) Empty folder - the flag "EMPTY" is returned as the status.
+            (1) No name - the flag "Unknown name" is returned as the status.
+            (2) Empty folder - the flag "Empty folder" is returned as the status.
             (3) Unknown other error - the flag "UNKNOWN" is returned as the status.
     '''
 
-def send_folder(name):
-    ''' Nave's part!
+def send_folder(sock, name):
+    ''' need to be implemented!
     '''
+    f = open('Try/zipFile.zip', 'rb')
+    cont = f.read()
+    secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
+    
 
 def create_user(username, password):
     ''' To be implemented, note the flags...
@@ -162,6 +166,8 @@ def get_fields_values(cont):
 def do_work():
     client_socket, client_addr = q.get()
     read_type = "r"
+    folder_flag = False
+    
     while True:
         req = secure_recv(client_socket)
         if req == "":
@@ -186,7 +192,7 @@ def do_work():
                             if stat == "Unknown name":
                                 path = NO_NAME_ERROR_PATH
                                 status = "200"
-                            elif stat == "Empty folder:
+                            elif stat == "Empty folder":
                                 path = EMPTY_FOLDER_ERROR_PATH
                                 status = "200"
                             elif stat == "Success":
@@ -194,10 +200,10 @@ def do_work():
                                 status = "200"
                             
                         elif key == "is_approved": # Download - second part.
-                            if value == "YES": # Partial implementetion, Nave's part!!
+                            if value == "YES": # Partial implementetion, need to add distinguishing things with URI, etc.!
                                 path = HE_SAID_YES_PATH
                                 status = "200"
-                                send_folder(name) # Nave's part!
+                                folder_flag = True
                             elif value == "NO":
                                 path = HE_GAVE_UP_PATH
                                 status = "200"
@@ -230,7 +236,10 @@ def do_work():
                 path = ERROR_500_PATH
 
             finally:
-                send_status(path, read_type, status, client_socket)
+                if folder_flag:
+                    send_folder(client_socket, name)
+                else:
+                    send_status(path, read_type, status, client_socket)
         
         
 def make_threads_and_queue(num, size):
