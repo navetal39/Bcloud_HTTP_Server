@@ -90,6 +90,7 @@ def send_folder(name):
 
 def create_user(username, password):
     ''' To be implemented, notethe flags...
+    ''' To be implemented, note the flags...
     '''
 
 ## Small Help Methods: ##
@@ -182,14 +183,14 @@ def do_work():
                         key, value = params.split("=") # Because there is ONLY one parameter, for sure.
                         if key == "username": # Download - first part.
                             name = value # For the second part.
-                            stat, data = get_last_update(value)
-                            if stat == "NO_NAME":
+                            stat, data = get_last_update(name)
+                            if stat == "Unknown name":
                                 path = NO_NAME_ERROR_PATH
                                 status = "200"
-                            elif stat == "EMPTY":
+                            elif stat == "Empty folder:
                                 path = EMPTY_FOLDER_ERROR_PATH
                                 status = "200"
-                            elif stat == "OK":
+                            elif stat == "Success":
                                 path = LAST_UPDATE_PLUS_PATH # Add last update...!
                                 status = "200"
                             
@@ -218,10 +219,10 @@ def do_work():
                     form_content = parsed_request[2]
                     fields_dict = get_fields_values(form_content)
                     stat = create_user(fields_dict['username'], fields_dict['password'])
-                    if stat == "NAME_IN_USE":
+                    if stat == "Name in use":
                         path = NAME_IN_USE_ERROR_PATH
                         status = "200"
-                    elif stat == "OK":
+                    elif stat == "Success":
                         path = SIGN_UP_APPROVAL_PATH
                         status = "200"
                 
