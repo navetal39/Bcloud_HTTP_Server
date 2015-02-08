@@ -89,7 +89,6 @@ def send_folder(name):
     '''
 
 def create_user(username, password):
-    ''' To be implemented, notethe flags...
     ''' To be implemented, note the flags...
     '''
 
