@@ -178,7 +178,7 @@ def do_work():
                             elif stat == "SCS":
                                 path = LAST_UPDATE_PLUS_PATH # Add last update...!
                                 status = "200"
-                            else:
+                            else: # That's pointless... only a bug in the other module will lead here...
                                 raise
                             
                         elif key == "is_approved": # Download - second part.
@@ -189,9 +189,13 @@ def do_work():
                             elif value == "NO":
                                 path = HE_GAVE_UP_PATH
                                 status = "200"
-                            else: #If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
-                                status = "404"
+                            else: # If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
+                                status = "404" #
                                 path = ERROR_404_PATH
+                                
+                        else: # Same shit again... If the user decides to try to be funny and put something else in the url rather than "username/is_approved" thinking that he may crash our server by doing so...
+                            status = "404" # We need to treat that idea of fucked URL diffrenly, ask me to understand what I mean...
+                            path = ERROR_404_PATH
                     
                     else: # Normal 'GET'
                         if path == "favicon.ico":
@@ -202,7 +206,7 @@ def do_work():
                         elif path in MOVED.keys():
                             status = "301"
                         else:
-                            status = "404"
+                            status = "404" #
                             path = ERROR_404_PATH
 
                 elif req_type == "POST": # Only registery
@@ -224,7 +228,7 @@ def do_work():
 
             finally:
                 if folder_flag:
-                    cont=main_server.get_folder(name)
+                    cont = main_server.get_folder(name)
                     secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)
@@ -241,7 +245,7 @@ def make_threads_and_queue(num, size):
 
 ## Main Activity Method: ##
 def main():
-    port=80
+    port = 80
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
     while True:
