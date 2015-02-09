@@ -168,7 +168,7 @@ def do_work():
                         key, value = params.split("=") # Because there is ONLY one parameter, for sure.
                         if key == "username": # Download - first part.
                             name = value # For the second part.
-                            stat, data = main_server.get_last_update(name)
+                            stat, data = main_server.get_last_update(name) #Where does that object is initialized?
                             if stat == "NNM":
                                 path = NO_NAME_ERROR_PATH
                                 status = "200"
