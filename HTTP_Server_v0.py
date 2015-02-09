@@ -4,10 +4,9 @@
 # ===================================
 '''
 TO DO:
-    1. Implement the methods "get_last_update()", "send_folder()" and "create_user()".
-    2. Find how to add the last update to last update page, then implement it.
-    3. Add TLS!
-    4. Make the part that communicates with the main server it's own class (and object), just so it'll look better.
+    1. Find how to add the last update to last update page, then implement it.
+    2. Add TLS!
+    3. Make the part that communicates with the main server it's own class (and object), just so it'll look better.
     
 '''
 
@@ -17,6 +16,7 @@ TO DO:
 import re, urlparse, socket, Queue
 from threading import Thread
 from os.path import isfile
+from Main_Server_Com import Server
 
 
 
@@ -39,13 +39,11 @@ HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
 ##Server-Server Communication: ##
-## Commented out until the main server-http server module will be set up and working. ##
-# SERVER_COM_IP="127.0.0.1"
-# SERVER_COM_PORT=3417
-# SERVER_COM_SOCKEt=socket.socket()
-# SERVER_COM_SOCKEt.connect((SERVER_COM_IP, SERVER_COM_PORT))
+SERVER_COM_IP="127.0.0.1"
+SERVER_COM_PORT=3417
+main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
-## Other usefullness: ##
+## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
                 "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
 MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
@@ -77,30 +75,6 @@ def secure_close(sock):
     ''' This method needs to...
     '''
     sock.close()
-
-
-## Help methods that need cummunication ##
-def get_last_update(name):
-    ''' returns the date of the last update of the public folder belongs to the username 'name' and a flag reflecting the request's
-        status (succses/no name/empty filder).
-        
-        Errors:
-            (1) No name - the flag "Unknown name" is returned as the status.
-            (2) Empty folder - the flag "Empty folder" is returned as the status.
-            (3) Unknown other error - the flag "Unknown error" is returned as the status.
-    '''
-def send_folder(sock, name):
-    ''' need to be implemented!
-    '''
-    # Temp stuff for testing. Remove when the actual code is written:
-    f = open('Try/zipFile.zip', 'rb')
-    cont = f.read()
-    secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
-    
-
-def create_user(username, password):
-    ''' To be implemented, note the flags...
-    '''
 
 ## Small Help Methods: ##
 def decide_type(req):
@@ -194,14 +168,14 @@ def do_work():
                         key, value = params.split("=") # Because there is ONLY one parameter, for sure.
                         if key == "username": # Download - first part.
                             name = value # For the second part.
-                            stat, data = get_last_update(name)
-                            if stat == "Unknown name":
+                            stat, data = main_server.get_last_update(name)
+                            if stat == "NNM":
                                 path = NO_NAME_ERROR_PATH
                                 status = "200"
-                            elif stat == "Empty folder":
+                            elif stat == "EMP":
                                 path = EMPTY_FOLDER_ERROR_PATH
                                 status = "200"
-                            elif stat == "Success":
+                            elif stat == "SCS":
                                 path = LAST_UPDATE_PLUS_PATH # Add last update...!
                                 status = "200"
                             else:
@@ -234,13 +208,15 @@ def do_work():
                 elif req_type == "POST": # Only registery
                     form_content = parsed_request[2]
                     fields_dict = get_fields_values(form_content)
-                    stat = create_user(fields_dict['username'], fields_dict['password'])
-                    if stat == "Name in use":
+                    stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
+                    if stat == "NIU":
                         path = NAME_IN_USE_ERROR_PATH
                         status = "200"
-                    elif stat == "Success":
+                    elif stat == "SCS":
                         path = SIGN_UP_APPROVAL_PATH
                         status = "200"
+                    else:
+                        raise
                 
             except: # That's an Internal Server Error (500)
                 status = "500"
@@ -248,7 +224,8 @@ def do_work():
 
             finally:
                 if folder_flag:
-                    send_folder(client_socket, name)
+                    cont=main_server.get_folder(name)
+                    secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)
         
