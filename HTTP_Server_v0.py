@@ -17,7 +17,6 @@ import re, urlparse, socket, Queue
 from threading import Thread
 from os.path import isfile
 from Main_Server_Com import Server
-import socket
 
 
 
