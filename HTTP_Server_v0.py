@@ -17,6 +17,7 @@ import re, urlparse, socket, Queue
 from threading import Thread
 from os.path import isfile
 from Main_Server_Com import Server
+import socket
 
 
 
@@ -168,7 +169,7 @@ def do_work():
                         key, value = params.split("=") # Because there is ONLY one parameter, for sure.
                         if key == "username": # Download - first part.
                             name = value # For the second part.
-                            stat, data = main_server.get_last_update(name) #Where does that object is initialized?
+                            stat, data = main_server.get_last_update(name)
                             if stat == "NNM":
                                 path = NO_NAME_ERROR_PATH
                                 status = "200"
@@ -229,7 +230,7 @@ def do_work():
             finally:
                 if folder_flag:
                     cont = main_server.get_folder(name)
-                    secure_send(sock, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
+                    secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)
         

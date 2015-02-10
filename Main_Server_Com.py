@@ -7,6 +7,8 @@
 To do:
 1) Add "get folder" function.
 '''
+
+import socket
 class Server(object):
     def __init__(self, ip, port):
         ''' This method will run every time you boot up the module.
