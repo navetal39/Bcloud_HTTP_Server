@@ -178,7 +178,7 @@ def do_work():
                             elif stat == "SCS":
                                 path = LAST_UPDATE_PLUS_PATH # Add last update...!
                                 status = "200"
-                            else: # That's pointless... only a bug in the other module will lead here...
+                            else:
                                 raise
                             
                         elif key == "is_approved": # Download - second part.
@@ -190,11 +190,11 @@ def do_work():
                                 path = HE_GAVE_UP_PATH
                                 status = "200"
                             else: # If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
-                                status = "404" #
+                                status = "404"
                                 path = ERROR_404_PATH
                                 
                         else: # Same shit again... If the user decides to try to be funny and put something else in the url rather than "username/is_approved" thinking that he may crash our server by doing so...
-                            status = "404" # We need to treat that idea of fucked URL diffrenly, ask me to understand what I mean...
+                            status = "404"
                             path = ERROR_404_PATH
                     
                     else: # Normal 'GET'
