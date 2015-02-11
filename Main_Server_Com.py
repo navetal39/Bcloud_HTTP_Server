@@ -7,7 +7,6 @@
 '''
 To do:
 1) Add "get folder" function.
-    1.1) Make sure the function supports any file size
 '''
 
 import socket
