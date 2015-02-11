@@ -60,10 +60,10 @@ def secure_accept(server_socket):
     cs,ca = server_socket.accept()
     return (cs, ca)
 
-def secure_recv(sock):
+def secure_recv(sock, size = '5000'):
     ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
     '''
-    return sock.recv(5000) #Need to do the thing with the length...
+    return sock.recv(size)
 
 def secure_send(sock, mess):
     ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).

@@ -1,6 +1,7 @@
 # INFO: #
 # PreFirst version.
-# No Encryption nor https (tls/ssl).
+# No Encryption (tls/ssl).
+# get_folder not tested yet.
 # ===================================
 
 '''
@@ -10,6 +11,7 @@ To do:
 '''
 
 import socket
+from HTTP_Server_v0 import seccure_recv, seccure_send
 
 
 class Server(object):
@@ -52,13 +54,30 @@ class Server(object):
         else:
             return flag, resp_parts[1]
         
-    def get_folder(self, folder_name):
+    def get_folder(self, folder_name, count == 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
             in the folowing format: "SCS;<DATA>". If it does not it should get "NNM".
             In the case the folder does not exist this function should load the dedicated
             HTML file and send it instead.
         '''
-        pass
+        sock=self.MAIN_SOCKET
+        secure_send(sock, 'GET;{}'.format(folder_name))
+        response=secure_recv(sock)
+        flag, str_size = response.split(';')
+        try:
+            if flag != 'SIZ':
+                raise
+            size = int(str_size)
+        except:
+            if count < 3: #Just making sure that it won't attemt endlessly
+                seure_send(sock, 'NAK')
+                final_response = self.get_folder(sock, folder_name, count+1)
+            else:
+                final_response = 'WTF'
+            return final_response
+        seure_send(sock, 'ACK')
+        final_response = secure_recv(sock, size)
+        return final_response
 
 '''
 Exciting. Satisfying. Period.
