@@ -53,7 +53,7 @@ class Server(object):
         else:
             return flag, resp_parts[1]
         
-    def get_folder(self, folder_name, count == 0):
+    def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
             in the folowing format: "SCS;<DATA>". If it does not it should get "NNM".
             In the case the folder does not exist this function should load the dedicated
