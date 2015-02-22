@@ -16,7 +16,7 @@ TO DO:
 import re, urlparse, socket, Queue
 from threading import Thread
 from os.path import isfile
-from Main_Server_Com import Server
+from Utility import *
 
 
 
@@ -24,24 +24,6 @@ from Main_Server_Com import Server
 ## General: ##
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
-
-## Pahts: ##
-### Error paths: ###
-ERROR_404_PATH = "Pages/Error404.htm"
-ERROR_500_PATH = "Pages/Error500.htm"
-NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm"
-EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
-NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm"
-### General paths: ###
-LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
-HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
-HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
-SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
-
-##Server-Server Communication: ##
-SERVER_COM_IP="127.0.0.1"
-SERVER_COM_PORT=3417
-main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
 ## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
@@ -60,7 +42,7 @@ def secure_accept(server_socket):
     cs,ca = server_socket.accept()
     return (cs, ca)
 
-def secure_recv(sock, size = '5000'):
+def secure_recv(sock, size = 5000):
     ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
     '''
     return sock.recv(size)
@@ -129,17 +111,6 @@ def send_status(path, read_type, status, sock):
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
     status_line = STATUS_LINES[status]
     secure_send(sock, status_line+headers+"\r\n"+data)
-
-def get_fields_values(cont):
-    '''
-    '''
-    fields_values = dict()
-    fields = cont.split('&')
-    for field in fields:
-        name, value = field.split('=')
-        fields_values[name] = value
-
-    return fields_values
     
 
 ## General Methods: ##
@@ -165,38 +136,7 @@ def do_work():
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
                     if params: # Download
-                        key, value = params.split("=") # Because there is ONLY one parameter, for sure.
-                        if key == "username": # Download - first part.
-                            name = value # For the second part.
-                            stat, data = main_server.get_last_update(name)
-                            if stat == "NNM":
-                                path = NO_NAME_ERROR_PATH
-                                status = "200"
-                            elif stat == "EMP":
-                                path = EMPTY_FOLDER_ERROR_PATH
-                                status = "200"
-                            elif stat == "SCS":
-                                path = LAST_UPDATE_PLUS_PATH # Add last update...!
-                                status = "200"
-                            else:
-                                raise
-                            
-                        elif key == "is_approved": # Download - second part.
-                            if value == "YES": # Partial implementetion, need to add distinguishing things with URI, etc.!
-                                path = HE_SAID_YES_PATH
-                                status = "200"
-                                folder_flag = True
-                            elif value == "NO":
-                                path = HE_GAVE_UP_PATH
-                                status = "200"
-                            else: # If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
-                                status = "404"
-                                path = ERROR_404_PATH
-                                
-                        else: # Same shit again... If the user decides to try to be funny and put something else in the url rather than "username/is_approved" thinking that he may crash our server by doing so...
-                            status = "404"
-                            path = ERROR_404_PATH
-                    
+                        status, path, folder_flag = download(params)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
@@ -210,17 +150,7 @@ def do_work():
                             path = ERROR_404_PATH
 
                 elif req_type == "POST": # Only registery
-                    form_content = parsed_request[2]
-                    fields_dict = get_fields_values(form_content)
-                    stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
-                    if stat == "NIU":
-                        path = NAME_IN_USE_ERROR_PATH
-                        status = "200"
-                    elif stat == "SCS":
-                        path = SIGN_UP_APPROVAL_PATH
-                        status = "200"
-                    else:
-                        raise
+                    status, path = register(parsed_request)
                 
             except: # That's an Internal Server Error (500)
                 status = "500"
@@ -228,7 +158,7 @@ def do_work():
 
             finally:
                 if folder_flag:
-                    cont = main_server.get_folder(name)
+                    cont = get_folder(name)
                     secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)
