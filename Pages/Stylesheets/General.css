@@ -1,19 +1,63 @@
 img#logo {
+	height:25%;
 	width:25%;
 	float:left;
 }
 
-nav {
-  width:75%;
-  float:right;
-  margin-top:65px;
+
+nav#top {
+	width:75%;
+	float:right;
 }
 
-nav ul {
-  list-style-type:none;
+nav#top ul {
+	list-style-type:none;
 }
 
-nav li {
-  float:left;
-  margin-right:5px;
+nav#top li {
+	float:left;
+	margin-right:7px;
 }
+/*
+a {
+	text-decoration:none;
+	color:white;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+nav#top h1 {
+	font-size:10em;
+	background-color:#008200;
+	color:white;
+	display:inline;
+	border:5px black solid;
+	margin-right:3px;
+}
+*/
