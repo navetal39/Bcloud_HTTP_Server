@@ -16,7 +16,7 @@ TO DO:
 import re, urlparse, socket, Queue
 from threading import Thread
 from os.path import isfile
-from Main_Server_Com import Server
+from Utility import *
 
 
 
@@ -111,17 +111,6 @@ def send_status(path, read_type, status, sock):
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
     status_line = STATUS_LINES[status]
     secure_send(sock, status_line+headers+"\r\n"+data)
-
-def get_fields_values(cont):
-    '''
-    '''
-    fields_values = dict()
-    fields = cont.split('&')
-    for field in fields:
-        name, value = field.split('=')
-        fields_values[name] = value
-
-    return fields_values
     
 
 ## General Methods: ##
@@ -147,7 +136,7 @@ def do_work():
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
                     if params: # Download
-                        status, path = extra.download(params)
+                        status, path, folder_flag = download(params)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
@@ -161,17 +150,7 @@ def do_work():
                             path = ERROR_404_PATH
 
                 elif req_type == "POST": # Only registery
-                    form_content = parsed_request[2]
-                    fields_dict = get_fields_values(form_content)
-                    stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
-                    if stat == "NIU":
-                        path = NAME_IN_USE_ERROR_PATH
-                        status = "200"
-                    elif stat == "SCS":
-                        path = SIGN_UP_APPROVAL_PATH
-                        status = "200"
-                    else:
-                        raise
+                    status, path = register(parsed_request)
                 
             except: # That's an Internal Server Error (500)
                 status = "500"
@@ -179,7 +158,7 @@ def do_work():
 
             finally:
                 if folder_flag:
-                    cont = main_server.get_folder(name)
+                    cont = get_folder(name)
                     secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)

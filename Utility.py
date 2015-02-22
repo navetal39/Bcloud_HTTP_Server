@@ -20,7 +20,19 @@ SERVER_COM_IP="127.0.0.1"
 SERVER_COM_PORT=3417
 main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
+def get_fields_values(cont):
+    '''
+    '''
+    fields_values = dict()
+    fields = cont.split('&')
+    for field in fields:
+        name, value = field.split('=')
+        fields_values[name] = value
+
+    return fields_values
+
 def download(params):
+    folder_flag = False
     key, value = params.split("=") # Because there is ONLY one parameter, for sure.
     
     if key == "username": # Download - first part.
@@ -52,7 +64,22 @@ def download(params):
     else: # Same shit again... If the user decides to try to be funny and put something else in the url rather than "username/is_approved" thinking that he may crash our server by doing so...
         status = "404"
         path = ERROR_404_PATH
+    return status, path, folder_flag
+
+def register(parsed_request):
+    form_content = parsed_request[2]
+    fields_dict = get_fields_values(form_content)
+    stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
+    if stat == "NIU":
+        path = NAME_IN_USE_ERROR_PATH
+        status = "200"
+    elif stat == "SCS":
+        path = SIGN_UP_APPROVAL_PATH
+        status = "200"
+    else:
+        raise
     return status, path
 
-                    
+def get_folder(name):
+    return main_server.get_folder(name)
 
