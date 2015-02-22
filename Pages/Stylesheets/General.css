@@ -1,0 +1,19 @@
+img#logo {
+	width:25%;
+	float:left;
+}
+
+nav {
+  width:75%;
+  float:right;
+  margin-top:65px;
+}
+
+nav ul {
+  list-style-type:none;
+}
+
+nav li {
+  float:left;
+  margin-right:5px;
+}
