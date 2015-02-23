@@ -10,7 +10,6 @@ To do:
 '''
 
 import socket
-from HTTP_Server_v0 import seccure_recv, seccure_send
 
 
 class Server(object):
@@ -60,8 +59,8 @@ class Server(object):
             HTML file and send it instead.
         '''
         sock=self.MAIN_SOCKET
-        secure_send(sock, 'GET;{}'.format(folder_name))
-        response=secure_recv(sock)
+        sock.send('GET;{}'.format(folder_name))
+        response=sock.recv(5000)
         flag, str_size = response.split(';')
         try:
             if flag != 'SIZ':
@@ -75,7 +74,7 @@ class Server(object):
                 final_response = 'WTF'
             return final_response
         seure_send(sock, 'ACK')
-        final_response = secure_recv(sock, size)
+        final_response = sock.recv(size)
         return final_response
 
 '''
