@@ -118,6 +118,7 @@ def do_work():
     client_socket, client_addr = q.get()
     read_type = "r"
     folder_flag = False
+    thread_server = get_server_for_thread()
     
     while True:
         req = secure_recv(client_socket)
@@ -136,7 +137,7 @@ def do_work():
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
                     if params: # Download
-                        status, path, folder_flag = download(params)
+                        status, path, folder_flag = download(thread_server, params)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
@@ -150,7 +151,7 @@ def do_work():
                             path = ERROR_404_PATH
 
                 elif req_type == "POST": # Only registery
-                    status, path = register(parsed_request)
+                    status, path = register(thread_server, parsed_request)
                 
             except: # That's an Internal Server Error (500)
                 status = "500"
@@ -158,7 +159,7 @@ def do_work():
 
             finally:
                 if folder_flag:
-                    cont = get_folder(name)
+                    cont = get_folder(thread_server, name)
                     secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
                 else:
                     send_status(path, read_type, status, client_socket)

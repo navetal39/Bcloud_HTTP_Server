@@ -20,6 +20,8 @@ SERVER_COM_IP="127.0.0.1"
 SERVER_COM_PORT=3417
 main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
+def new_server_instance(port):
+    
 def get_fields_values(cont):
     '''
     '''

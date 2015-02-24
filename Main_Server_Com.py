@@ -6,10 +6,9 @@
 
 '''
 To do:
-1) Add "get folder" function.
 '''
 
-import socket
+import socket, time
 
 
 class Server(object):
@@ -20,7 +19,7 @@ class Server(object):
         self.MAIN_PORT = port
         self.MAIN_SOCKET = socket.socket()
         self.send_list = []
-        #self.MAIN_SOCKET.connect((MAIN_IP, MAIN_PORT))
+        self.MAIN_SOCKET.connect((MAIN_IP, MAIN_PORT))
     
     def __str__(self):
         return "ip: {ip}; port: {port}".format(ip=self.MAIN_IP, port=self.MAIN_PORT)
@@ -30,13 +29,13 @@ class Server(object):
     
     def create_user(self, name, pw):
         message = "REG;{n};{p}".format(n=name, p=pw)
-        self.MAIN_SOCKET.send(message) #Encription? TLS?
+        self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
         resp_parts = resp.split(';')
         flag = resp_parts[0]
         resp_parts.remove(flag)
-        if resp_parts == message.split(';'):
-            return "WTF" #Wat? :/
+        if resp_parts != message.split(';'):
+            return "WTF"
         else:
             return flag
         
@@ -47,10 +46,19 @@ class Server(object):
         resp_parts = resp.split(';')
         flag = resp_parts[0]
         resp_parts.remove(flag)
-        if resp_parts == message.split(';'):
-            return "WTF"
+        if resp_parts != message.split(';'):
+            return "WTF", "WTF'
         else:
-            return flag, resp_parts[1]
+            data = resp_parts[2]
+            data_list = data.split('\n')
+            times = []
+            for pair in data_list:
+                try:
+                    times.append(float(pair.split('@')[1]))
+                except:
+                    pass
+            latest = max(times)
+            return flag, time.asctime(time.localtime(latest))
         
     def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
@@ -68,14 +76,15 @@ class Server(object):
             size = int(str_size)
         except:
             if count < 3: #Just making sure that it won't attemt endlessly
-                seure_send(sock, 'NAK')
+                sock.send('NAK')
                 final_response = self.get_folder(sock, folder_name, count+1)
             else:
                 final_response = 'WTF'
             return final_response
-        seure_send(sock, 'ACK')
-        final_response = sock.recv(size)
-        return final_response
+        else:
+            seure_send(sock, 'ACK')
+            final_response = sock.recv(size)
+            return final_response
 
 '''
 Exciting. Satisfying. Period.
