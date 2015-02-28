@@ -1,3 +1,4 @@
+# Constants: #
 ## Pahts: ##
 ### Error paths: ###
 ERROR_404_PATH = "Pages/Error404.htm"
@@ -11,15 +12,16 @@ HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
 HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
+## Server-Server Communication: ##
+SERVER_COM_IP = "127.0.0.1"
+SERVER_COM_PORT = 3417
+
+
 # Imports: #
 import socket
 from Main_Server_Com import Server
 from os.path import isfile
 
-##Server-Server Communication: ##
-SERVER_COM_IP="127.0.0.1"
-SERVER_COM_PORT=3417
-main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
 def new_server_instance(port):
     pass

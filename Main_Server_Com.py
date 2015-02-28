@@ -11,7 +11,7 @@ To do:
 import socket, time
 
 
-class Server(object):
+class ClientToServer(object):
     def __init__(self, ip, port):
         ''' This method will run every time you boot up the module.
         '''
