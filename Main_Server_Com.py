@@ -47,7 +47,7 @@ class Server(object):
         flag = resp_parts[0]
         resp_parts.remove(flag)
         if resp_parts != message.split(';'):
-            return "WTF", "WTF'
+            return "WTF", "WTF"
         else:
             data = resp_parts[2]
             data_list = data.split('\n')

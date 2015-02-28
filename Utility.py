@@ -14,6 +14,7 @@ SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 # Imports: #
 import socket
 from Main_Server_Com import Server
+from os.path import isfile
 
 ##Server-Server Communication: ##
 SERVER_COM_IP="127.0.0.1"
@@ -21,6 +22,7 @@ SERVER_COM_PORT=3417
 main_server=Server(SERVER_COM_IP, SERVER_COM_PORT)
 
 def new_server_instance(port):
+    pass
     
 def get_fields_values(cont):
     '''
@@ -33,9 +35,17 @@ def get_fields_values(cont):
 
     return fields_values
 
+def path_exists(path):
+    ''' For conventions, :P.
+    '''
+    return isfile(path)
+
 def download(params):
     folder_flag = False
-    key, value = params.split("=") # Because there is ONLY one parameter, for sure.
+    try:
+        key, value = params.split("=") # Because there is ONLY one parameter, for sure.
+    except:
+        raise
     
     if key == "username": # Download - first part.
         name = value # For the second part.

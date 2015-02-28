@@ -15,7 +15,6 @@ TO DO:
 # Imports: #
 import re, urlparse, socket, Queue
 from threading import Thread
-from os.path import isfile
 from Utility import *
 
 
@@ -26,9 +25,9 @@ NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
 
 ## Other usefull stuff: ##
-STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 NOT FOUND\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
+STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 Not Found\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
                 "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
-MOVED = {'':'Pages/index.htm', 'favicon.ico':'Pages/favicon.ico'}
+MOVED = {"":"Pages/index.htm", "favicon.ico":"Pages/favicon.ico"}
 
 
 
@@ -96,11 +95,6 @@ def parse_req(req):
 
     return (parsed_status_line, headers, content)
 
-def path_exists(path):
-    ''' For conventions, :P.
-    '''
-    return isfile(path)
-
 def send_status(path, read_type, status, sock):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
@@ -122,7 +116,7 @@ def do_work():
     
     while True:
         req = secure_recv(client_socket)
-        if req == "":
+        if req == "": # Qestions about download to Zeev; Tamir wrote, Tamir will understand! DON'T DELEAT!
             secure_close(client_socket)
             print "Closed connection" # -For The Record-
             q.task_done()
@@ -131,7 +125,7 @@ def do_work():
                 req_type = decide_type(req)
                 parsed_request = parse_req(req)
                 if req_type == "GET":
-                    print "have a 'GET' request\n", req # -For The Record-
+                    print "have a 'GET' request:\n", req # -For The Record-
                     url = parsed_request[0]['url']
                     parsed_url = urlparse.urlparse(url)
                     path = parsed_url.path.lstrip('/')
@@ -147,7 +141,7 @@ def do_work():
                         elif path in MOVED.keys():
                             status = "301"
                         else:
-                            status = "404" #
+                            status = "404"
                             path = ERROR_404_PATH
 
                 elif req_type == "POST": # Only registery
