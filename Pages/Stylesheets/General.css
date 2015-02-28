@@ -7,9 +7,19 @@ img#logo {
 
 nav#top {
 	width:75%;
-	float:right;
+	float:left;
 }
 
+table#nav {
+	border:blue 1px groove;
+}
+
+table#nav th {
+	border:blue 5px groove;
+	border-collapse:collapsed;
+}
+
+/*
 nav#top ul {
 	list-style-type:none;
 }
