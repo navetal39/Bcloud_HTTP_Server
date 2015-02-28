@@ -130,7 +130,7 @@ def do_work():
                     parsed_url = urlparse.urlparse(url)
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
-                    if params: # Download
+                    if params: # Download  #^NOTE: note up^#
                         status, path, folder_flag = download(thread_server, params)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
