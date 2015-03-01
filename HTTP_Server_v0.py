@@ -1,12 +1,10 @@
 # INFO: #
-# PreFirst version.
 # No Encryption nor https (tls/ssl).
 # ===================================
 '''
 TO DO:
     1. Find how to add the last update to last update page, then implement it.
     2. Add TLS!
-    3. Make the part that communicates with the main server it's own class (and object), just so it'll look better.
     
 '''
 

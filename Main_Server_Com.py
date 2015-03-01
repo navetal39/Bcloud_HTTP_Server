@@ -1,12 +1,8 @@
 # INFO: #
-# PreFirst version.
 # No Encryption (tls/ssl).
 # get_folder not tested yet.
 # ===================================
 
-'''
-To do:
-'''
 
 import socket, time
 
