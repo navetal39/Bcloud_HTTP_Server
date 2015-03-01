@@ -28,8 +28,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
         resp_parts = resp.split(';')
-        flag = resp_parts[0]
-        resp_parts.remove(flag)
+        flag = resp_parts[0]; resp_parts.remove(flag)
         if resp_parts != message.split(';'):
             return "WTF"
         else:
@@ -40,9 +39,8 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
         resp_parts = resp.split(';')
-        flag = resp_parts[0]
-        resp_parts.remove(flag)
-        if resp_parts != message.split(';'):
+        flag = resp_parts[0]; resp_parts.remove(flag)
+        if resp_parts != message.split(';')[:2]:
             return "WTF", "WTF"
         else:
             data = resp_parts[2]
@@ -62,9 +60,9 @@ class Server(object): # The HTTP server sees is as a server, the main server see
             In the case the folder does not exist this function should load the dedicated
             HTML file and send it instead.
         '''
-        sock=self.MAIN_SOCKET
+        sock = self.MAIN_SOCKET
         sock.send('GET;{}'.format(folder_name))
-        response=sock.recv(5000)
+        response = sock.recv(5000)
         flag, str_size = response.split(';')
         try:
             if flag != 'SIZ':

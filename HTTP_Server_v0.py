@@ -178,7 +178,7 @@ def main():
             break
         except:
             port+=1
-    server_socket.listen(10)
+    server_socket.listen(6)
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
