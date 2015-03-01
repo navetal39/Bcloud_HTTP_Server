@@ -15,7 +15,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         self.MAIN_PORT = port
         self.MAIN_SOCKET = socket.socket()
         self.send_list = []
-        self.MAIN_SOCKET.connect((MAIN_IP, MAIN_PORT))
+        self.MAIN_SOCKET.connect((self.MAIN_IP, self.MAIN_PORT))
     
     def __str__(self):
         return "ip: {ip}; port: {port}".format(ip=self.MAIN_IP, port=self.MAIN_PORT)
@@ -34,8 +34,8 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         else:
             return flag
         
-    def get_last_update(self, folder_name):
-        message = "LUD;{}".format(folder_name)
+    def get_last_update(self, username, folder_name):
+        message = "LUD;{};{}".format(username, folder_name)
         self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
         resp_parts = resp.split(';')
@@ -76,7 +76,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
                 final_response = 'WTF'
             return final_response
         else:
-            seure_send(sock, 'ACK')
+            sock.send('ACK')
             final_response = sock.recv(size)
             return final_response
 

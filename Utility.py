@@ -62,7 +62,7 @@ def download(main_server, params, name):
     
     if key == "username": # Download - first part.
         name = value # For the second part.
-        stat, data = main_server.get_last_update(name)
+        stat, data = main_server.get_last_update(name, 'public')
         if stat == "NNM":
             path = NO_NAME_ERROR_PATH
             status = "200"

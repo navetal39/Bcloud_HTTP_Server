@@ -187,8 +187,6 @@ def main():
         q.put((client_socket, client_addr))
 
 
-main()
-
 '''
 Exciting. Satisfying. Period.
 .
