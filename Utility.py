@@ -26,8 +26,8 @@ from Main_Server_Com import Server
 from os.path import isfile
 
 
-def new_server_instance(port):
-    pass
+def get_server_for_thread():
+    return Server(SERVER_COM_IP, SERVER_COM_PORT)
     
 def get_fields_values(cont):
     '''
@@ -45,7 +45,7 @@ def path_exists(path):
     '''
     return isfile(path)
 
-def download(params):
+def download(main_server, params, name):
     folder_flag = False
     try:
         key, value = params.split("=") # Because there is ONLY one parameter, for sure.
@@ -81,9 +81,10 @@ def download(params):
     else: # Same shit again... If the user decides to try to be funny and put something else in the url rather than "username/is_approved" thinking that he may crash our server by doing so...
         status = "404"
         path = ERROR_404_PATH
-    return status, path, folder_flag
+        
+    return status, path, folder_flag, name
 
-def register(parsed_request):
+def register(main_server, parsed_request):
     form_content = parsed_request[2]
     fields_dict = get_fields_values(form_content)
     stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
@@ -97,7 +98,7 @@ def register(parsed_request):
         raise
     return status, path
 
-def get_folder(name):
+def get_folder(main_server, name):
     return main_server.get_folder(name)
 
 
