@@ -7,7 +7,7 @@
 import socket, time
 
 
-class Server(object):
+class Server(object): # The HTTP server sees is as a server, the main server sees it as a client. Relativity! WOOHOO!
     def __init__(self, ip, port):
         ''' This method will run every time you boot up the module.
         '''

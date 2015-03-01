@@ -110,6 +110,7 @@ def do_work():
     client_socket, client_addr = q.get()
     read_type = "r"
     folder_flag = False
+    name = ""
     thread_server = get_server_for_thread()
     
     while True:
@@ -128,8 +129,8 @@ def do_work():
                     parsed_url = urlparse.urlparse(url)
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
-                    if params: # Download  #^NOTE: note up^#
-                        status, path, folder_flag = download(thread_server, params)
+                    if params: # Download 
+                        status, path, folder_flag, name = download(thread_server, params, name)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
@@ -152,7 +153,7 @@ def do_work():
             finally:
                 if folder_flag:
                     cont = get_folder(thread_server, name)
-                    secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(con=cont, ln=len(cont)))
+                    secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                 else:
                     send_status(path, read_type, status, client_socket)
         
@@ -173,7 +174,7 @@ def main():
     server_socket = socket.socket()
     while True:
         try:
-            server_socket.bind(('0.0.0.0',port))
+            server_socket.bind(('0.0.0.0', port))
             break
         except:
             port+=1
