@@ -53,15 +53,15 @@ def path_exists(path):
     '''
     return isfile(path)
 
-def download(main_server, params, name):
+def download(main_server, params):
     folder_flag = False
     try:
-        key, value = params.split("=") # Because there is ONLY one parameter, for sure.
+        params_dict = get_fields_values(params)
     except:
         raise
     
-    if key == "username": # Download - first part.
-        name = value # For the second part.
+    if len(params_dict.keys()) == 1 and "username" in params_dict.keys(): # Download - first part.
+        name = params_dict["username"]
         stat, data = main_server.get_last_update(name, 'public')
         if stat == "NNM":
             path = NO_NAME_ERROR_PATH
@@ -74,14 +74,13 @@ def download(main_server, params, name):
             status = "200"
         else:
             raise
-    elif key == "is_approved": # Download - second part.
+    elif len(params_dict.keys()) == 2 and "username" in params_dict.keys() and "is_approved" in params_dict.keys() : # Download - second part.
+        value = params_dict["is_approved"]
         if value == "YES": # Partial implementetion, need to add distinguishing things with URI, etc.!
-            path = HE_SAID_YES_PATH
-            status = "200"
+            path = HE_SAID_YES_PATH; status = "200" # Just in case
             folder_flag = True
         elif value == "NO":
-            path = HE_GAVE_UP_PATH
-            status = "200"
+            path = HE_GAVE_UP_PATH; status = "200"  # Just in case
         else: # If the user decides to try to be funny and put something else in the url rather than "YES/NO" thinking that he may crash our server by doing so...
             status = "404"
             path = ERROR_404_PATH
@@ -90,7 +89,7 @@ def download(main_server, params, name):
         status = "404"
         path = ERROR_404_PATH
         
-    return status, path, folder_flag, name
+    return status, path, folder_flag, params_dict["username"]
 
 def register(main_server, parsed_request):
     form_content = parsed_request[2]
