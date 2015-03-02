@@ -111,11 +111,11 @@ def do_work():
     read_type = "r"
     folder_flag = False
     name = ""
-    thread_server = get_server_for_thread()
+    thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
     
     while True:
         req = secure_recv(client_socket)
-        if req == "": # Qestions about download to Zeev; Tamir wrote, Tamir will understand! DON'T DELEAT!
+        if req == "":
             secure_close(client_socket)
             print "Closed connection" # -For The Record-
             q.task_done()

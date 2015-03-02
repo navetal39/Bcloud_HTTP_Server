@@ -24,8 +24,7 @@ HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
 ## Server-Server Communication: ##
-SERVER_COM_IP = "127.0.0.1"
-SERVER_COM_PORT = 3417
+from COM import MAIN_SERVER_PORT, MAIN_SERVER_IP
 
 
 # Imports: #
@@ -35,7 +34,7 @@ from os.path import isfile
 
 
 def get_server_for_thread():
-    return Server(SERVER_COM_IP, SERVER_COM_PORT)
+    return Server(MAIN_SERVER_IP, MAIN_SERVER_PORT)
     
 def get_fields_values(cont):
     '''
