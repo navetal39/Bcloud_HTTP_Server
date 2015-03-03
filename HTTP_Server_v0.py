@@ -119,6 +119,7 @@ def do_work():
             secure_close(client_socket)
             print "Closed connection" # -For The Record-
             q.task_done()
+            break
         else:
             try:
                 req_type = decide_type(req)
