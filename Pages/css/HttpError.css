@@ -1,0 +1,9 @@
+h1 {
+	font-size:3em;
+	line-height: 0.3;
+}
+
+section img {
+    border:5px double #ddd;
+		margin-bottom:8px;
+}
