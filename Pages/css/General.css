@@ -1,73 +1,27 @@
-img#logo {
-	height:25%;
-	width:25%;
-	float:left;
+body {
+	background-color:beige;
 }
 
-
-nav#top {
-	width:75%;
-	float:left;
+nav ul {
+  list-style-type: none;
+  margin: 5px;
+  padding: 0;
+  overflow: hidden;
 }
 
-table#nav {
-	border:blue 1px groove;
-}
-
-table#nav th {
-	border:blue 5px groove;
-	border-collapse:collapsed;
-}
-
-/*
-nav#top ul {
-	list-style-type:none;
-}
-
-nav#top li {
-	float:left;
-	margin-right:7px;
-}
-/*
-a {
-	text-decoration:none;
-	color:white;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-nav#top h1 {
-	font-size:10em;
-	background-color:#008200;
-	color:white;
+nav li {
 	display:inline;
-	border:5px black solid;
-	margin-right:3px;
+  margin-left:5px;
 }
-*/
+
+section {
+	padding:3px;
+	background-color:black;
+	color:white;
+	width:85%;
+	border:7px solid blue;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+/* */
