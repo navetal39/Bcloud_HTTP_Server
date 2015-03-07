@@ -1,9 +1,9 @@
 dt {
-	border-top:5px ridge white;
-	border-bottom:5px groove white;
+	border-top:5px ridge #008200;
+	border-bottom:5px groove #008200;
 	font-size:1.2em;
 	font-weight:bold;
-	margin-top:20px;
+	margin-top:25px;
 }
 
 

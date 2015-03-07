@@ -9,9 +9,14 @@ nav ul {
   overflow: hidden;
 }
 
-nav li {
+nav#top li {
 	display:inline;
-  margin-left:5px;
+  margin-left:25px;
+}
+
+nav#bottom li {
+	display:inline;
+  margin-left:7px;
 }
 
 section {
@@ -19,7 +24,7 @@ section {
 	background-color:black;
 	color:white;
 	width:85%;
-	border:7px solid blue;
+	border:7px solid #008200;
 	margin-left:auto;
 	margin-right:auto;
 }
@@ -38,6 +43,25 @@ section p {
 @media only screen and (max-width: 400px) {
 	section p {	width:98%;	}	
 }
+
+/* a tag cool thiny: */
+nav#top a {
+	font-size:2em;
+}
+
+a:link {
+	color:#008200;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+a:visited {
+	color:#008200;
+}
+
 
 /*
 Exciting. Satisfying. Period.
