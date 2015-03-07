@@ -74,10 +74,10 @@ class Server(object): # The HTTP server sees is as a server, the main server see
                 final_response = self.get_folder(sock, folder_name, count+1)
             else:
                 final_response = 'WTF'
-            return final_response
         else:
             sock.send('ACK')
             final_response = sock.recv(size)
+        finally:
             return final_response
 
 '''
