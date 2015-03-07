@@ -14,9 +14,9 @@ TO DO:
 ### Error paths: ###
 ERROR_404_PATH = "Pages/Error404.htm"
 ERROR_500_PATH = "Pages/Error500.htm"
-NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm"
+NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm" #JS
 EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
-NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm"
+NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm" #JS
 ### General paths: ###
 LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
 HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
@@ -62,7 +62,7 @@ def download(main_server, params):
     if len(params_dict.keys()) == 1 and "username" in params_dict.keys(): # Download - first part.
         name = params_dict["username"]
         stat, data = main_server.get_last_update(name, 'public')
-        if stat == "NNM":
+        if stat == "NNM": #deal with JS
             path = NO_NAME_ERROR_PATH
             status = "200"
         elif stat == "EMP":
@@ -94,7 +94,7 @@ def register(main_server, parsed_request):
     form_content = parsed_request[2]
     fields_dict = get_fields_values(form_content)
     stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
-    if stat == "NIU":
+    if stat == "NIU": #deal with JS
         path = NAME_IN_USE_ERROR_PATH
         status = "200"
     elif stat == "SCS":
