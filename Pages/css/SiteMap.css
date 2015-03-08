@@ -1,0 +1,16 @@
+a {
+	color:#008200;
+}
+
+a:link {
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+/*
+Exciting. Satisfying. Period.
+.
+*/
