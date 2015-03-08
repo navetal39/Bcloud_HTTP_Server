@@ -19,8 +19,8 @@ EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
 NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm" #JS
 ### General paths: ###
 LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
-HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm"
-HE_SAID_YES_PATH = "Pages/ThanksFor.htm"
+HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm" #Useless
+HE_SAID_YES_PATH = "Pages/ThanksFor.htm" #Useless
 SIGN_UP_APPROVAL_PATH = "Pages/SignUpApproval.htm"
 
 ## Server-Server Communication: ##
