@@ -169,7 +169,7 @@ def make_threads_and_queue(num, size):
 
 
 ## Main Activity Method: ##
-def main():
+def run():
     port = 80
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
