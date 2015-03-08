@@ -12,6 +12,14 @@
   ––––––––––––––––––––––––––––––––––––––––––––––––––--->
 	<link rel="stylesheet" type="text/css" href="css/General.css">
 	<!-- Here you add CSS stylesheet -->
+	
+	<script type="text/javascript">
+		
+	</script>
+	
+	<style type="text/css">
+		label#one { margin-right:3px; }
+	</style>
 </head>
 
 <!--========================================================================================-->
@@ -35,6 +43,10 @@
 		<h1>Share</h1>
 		<p>Here you can download files other users chose to share. All you need to do is enter the username of whom you want to download his shared files.</p>
 		<!-- Add the form! -->
+		<form>
+			<label id="one">username: <input type="text" id="username"></label>
+			<input type="button" onclick="send()" value="Submit">
+		</form>
 	</section>
 	
 
