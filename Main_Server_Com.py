@@ -24,23 +24,23 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         return "################\nThe main server is (or at least should be) listening on:\nIP address: {ip}\nTCP port: {port}\n################".format(ip=self.MAIN_IP, port=self.MAIN_PORT)
     
     def create_user(self, name, pw):
-        message = "REG;{n};{p}".format(n=name, p=pw)
+        message = "REG|{n}|{p}".format(n=name, p=pw)
         self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
-        resp_parts = resp.split(';')
+        resp_parts = resp.split('|')
         flag = resp_parts[0]; resp_parts.remove(flag)
-        if resp_parts != message.split(';'):
+        if resp_parts != message.split('|'):
             return "WTF"
         else:
             return flag
         
     def get_last_update(self, username, folder_name):
-        message = "LUD;{};{}".format(username, folder_name)
+        message = "LUD|{}|{}".format(username, folder_name)
         self.MAIN_SOCKET.send(message)
         resp = self.MAIN_SOCKET.recv(1024)
-        resp_parts = resp.split(';')
+        resp_parts = resp.split('|')
         flag = resp_parts[0]; resp_parts.remove(flag)
-        if resp_parts != message.split(';')[:2]:
+        if resp_parts != message.split('|')[:2]:
             return "WTF", "WTF"
         else:
             data = resp_parts[2]
@@ -56,14 +56,14 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         
     def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
-            in the folowing format: "SCS;<DATA>". If it does not it should get "NNM".
+            in the folowing format: "SCS|<DATA>". If it does not it should get "NNM".
             In the case the folder does not exist this function should load the dedicated
             HTML file and send it instead.
         '''
         sock = self.MAIN_SOCKET
-        sock.send('GET;{}'.format(folder_name))
+        sock.send('GET|{}'.format(folder_name))
         response = sock.recv(5000)
-        flag, str_size = response.split(';')
+        flag, str_size = response.split('|')
         try:
             if flag != 'SIZ':
                 raise
