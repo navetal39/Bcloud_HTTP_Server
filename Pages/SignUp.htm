@@ -12,6 +12,10 @@
   ––––––––––––––––––––––––––––––––––––––––––––––––––--->
 	<link rel="stylesheet" type="text/css" href="css/General.css">
 	<!-- Here you add CSS stylesheet -->
+	
+		<!-- Javascript:
+  ––––––––––––––––––––––––––––––––––––––––––––––––––--->	
+	<script type="text/javascript" src="js/Validate.js"></script>
 </head>
 
 <!--========================================================================================-->
@@ -35,7 +39,15 @@
 		<h1>Sign Up</h1>
 		<p>Here you can sign up to our service. After you sign up, you need to download our program and sign in to your user from the program. <br><br>
 		MORE INSTRUCTIONS WILL BE ADDED IN THE FUTURE. </p>
+		<form method="POST" action="localhost:8080/SignUpAprroval.htm">
+			<p><label>Username: <input type="text" id="username"></label></p>
+			<p><label>Password: <input type="password" id="password"></label></p>
+			<p><input type="submit" value="Submit"</p>
+		</form>
+		
 		<!-- Need to add form -->
+		
+		
 		<a href="SignUpApproval.htm">The page that will be after the form</a>
 	</section>
 	
