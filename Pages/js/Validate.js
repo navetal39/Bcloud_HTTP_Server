@@ -3,10 +3,10 @@ function checkAndSend() {
 	var username = document.getElementById('username').value;
 	var valid = true;
 	
-		for (var i=0; i < forbidden.length; i++) {
-			if (username.indexOf(forbidden[i]) >= 0) { //If this is true, so the username is invalid.
-				valid = false;
-				break;
+	for (var i=0; i < forbidden.length; i++) {
+		if (username.indexOf(forbidden[i]) >= 0) { //If this is true, so the username is invalid.
+			valid = false;
+			break;
 		}
 	}
 	
