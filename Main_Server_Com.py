@@ -70,12 +70,12 @@ class Server(object): # The HTTP server sees is as a server, the main server see
             size = int(str_size)
         except:
             if count < 3: #Just making sure that it won't attemt endlessly
-                sock.send('NAK')
+                sock.send('NAK|'+response)
                 final_response = self.get_folder(sock, folder_name, count+1)
             else:
                 final_response = 'WTF'
         else:
-            sock.send('ACK')
+            sock.send('ACK|'+response)
             final_response = sock.recv(size)
         finally:
             return final_response

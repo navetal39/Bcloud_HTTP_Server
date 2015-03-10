@@ -1,6 +1,9 @@
 # INFO: #
 # No Encryption nor https (tls/ssl).
 # ===================================
+
+print 'http'
+
 '''
 TO DO:
     1. Find how to add the last update to last update page, then implement it.
