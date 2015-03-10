@@ -1,0 +1,21 @@
+function checkAndSend() {
+	var forbidden = ['|','\\', '/', ':', '*', '?', '"', '<', '>'];
+	var username = document.getElementById('username').value;
+	var valid = true;
+	document.getElementById('out').innerHTML = "";
+	
+		for (var i=0; i < forbidden.length; i++) {
+			document.getElementById('out').innerHTML += " == " + forbidden[i];
+			if (username.indexOf(forbidden[i]) >= 0) { //If this is true, so the username is invalid.
+				valid = false;
+				break;
+		}
+	}
+	
+	if (valid) {
+		var url = "http://localhost:8080/Downloading?username="+username;
+		window.open(url, "_self");
+	} else {
+		alert("The username is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
+	}
+}
