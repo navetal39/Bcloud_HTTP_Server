@@ -27,7 +27,7 @@ SIZE_OF_QUEUE = 40
 
 ## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 Not Found\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
-                "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error"}
+                "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error", "405": "HTTP/1.1 405 Method Not Allowed"}
 MOVED = {"":"Pages/index.htm", "favicon.ico":"Pages/favicon.ico"}
 
 
@@ -103,7 +103,7 @@ def send_status(path, read_type, status, sock):
     else:
         extra_header = ""
         data = open(path, read_type).read()
-    headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data),xh=extra_header)
+    headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data), xh=extra_header)
     status_line = STATUS_LINES[status]
     secure_send(sock, status_line+headers+"\r\n"+data)
     
@@ -133,8 +133,8 @@ def do_work():
                     parsed_url = urlparse.urlparse(url)
                     path = parsed_url.path.lstrip('/')
                     params = parsed_url.query
-                    if params: # Download 
-                        status, path, folder_flag, name = download(thread_server, params)
+                    if params: # Download or registery
+                        status, path, folder_flag, name = download_or_register(thread_server, params)
                     else: # Normal 'GET'
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
@@ -147,8 +147,10 @@ def do_work():
                             status = "404"
                             path = ERROR_404_PATH
 
-                elif req_type == "POST": # Only registery
-                    status, path = register(thread_server, parsed_request)
+                elif req_type == "POST": # 405 Method Not Allowed
+                    status = "405"
+                    path = ERROR_405_PATH
+                    #status, path = register(thread_server, parsed_request)
                 
             except: # That's an Internal Server Error (500)
                 status = "500"
