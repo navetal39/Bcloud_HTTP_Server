@@ -1,6 +1,8 @@
 function validation(str) {
 	var forbidden = ['|','\\', '/', ':', '*', '?', '"', '<', '>'];
 	
+	if (str.length < 4) { return false; }
+	
 	for (var i=0; i < forbidden.length; i++) {
 		if (str.indexOf(forbidden[i]) >= 0) { //If this is true, so the string is invalid.
 			return false;
@@ -24,7 +26,7 @@ function checkAndSend1() {
 		var url = "http://" + sIP + ":8080/Downloading?username=" + username;
 		window.open(url, "_self");
 	} else {
-		alert("The username is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
+		alert("The username is invalid or too short, please enter a different one. The minimal length is 4 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
 	}
 }
 
@@ -42,7 +44,7 @@ function checkAndSend2() {
 		var url = "http://" + sIP +":80/SigningUp?username=" + username + "&password=" + enc_pass;
 		window.open(url, "_self");
 	} else {
-		alert("The username or the password is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
+		alert("The username or the password is invalid or too short, please enter a different one. The minimal length is 4 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
 	}
 }
 
