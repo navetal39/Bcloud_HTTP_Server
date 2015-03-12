@@ -10,10 +10,11 @@ function validation(str) {
 	return true;
 }
 
+var sIP = "localhost"; /* <<<<<< This is the server's IP address. <<<<<< */
 
 /* For the FolderDownload page: */
 function checkAndSend1() {
-	var sIP = "localhost"; // This is the server's IP address.
+	//var sIP = "localhost"; // This is the server's IP address.
 	
 	var username = document.getElementById('username').value;
 	
@@ -29,9 +30,7 @@ function checkAndSend1() {
 
 
 /* For the SignUp page: */
-function checkAndSend2() {
-	var sIP = "localhost"; // This is the server's IP address.
-	
+function checkAndSend2() {	
 	var username = document.getElementById('username').value;
 	var password = document.getElementById('password').value;
 	
