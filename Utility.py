@@ -15,9 +15,9 @@ TO DO:
 ERROR_404_PATH = "Pages/Error404.htm"
 ERROR_405_PATH = "Pages/Error405.htm"
 ERROR_500_PATH = "Pages/Error500.htm"
-NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm" #JS
+NO_NAME_ERROR_PATH = "Pages/ErrorNoName.htm"
 EMPTY_FOLDER_ERROR_PATH = "Pages/ErrorEmptyFolder.htm"
-NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm" #JS
+NAME_IN_USE_ERROR_PATH = "Pages/ErrorNameInUse.htm"
 ### General paths: ###
 LAST_UPDATE_PLUS_PATH = "Pages/LastUpdatePlus.htm"
 HE_GAVE_UP_PATH = "Pages/HeGaveUp.htm" #Useless
