@@ -13,12 +13,14 @@ function validation(str) {
 
 /* For the FolderDownload page: */
 function checkAndSend1() {
+	var sIP = "localhost"; // This is the server's IP address.
+	
 	var username = document.getElementById('username').value;
 	
 	var valid = validation(username);
 	
 	if (valid) {
-		var url = "http://localhost:8080/Downloading?username="+username;
+		var url = "http://" + sIP + ":8080/Downloading?username=" + username;
 		window.open(url, "_self");
 	} else {
 		alert("The username is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
@@ -28,17 +30,20 @@ function checkAndSend1() {
 
 /* For the SignUp page: */
 function checkAndSend2() {
+	var sIP = "localhost"; // This is the server's IP address.
+	
 	var username = document.getElementById('username').value;
 	var password = document.getElementById('password').value;
 	
 	var valid = validation(username) && validation(password);
 	
 	if (valid) {
-		var x = "A";
-		//var url = "http://localhost:8080/SignUpApproval.htm";
-		//window.open(url, "_self");
+		var enc_pass = password;//need to encrypt the password!
+		
+		var url = "http://" + sIP +":80/SigningUp?username=" + username + "&password=" + enc_pass;
+		window.open(url, "_self");
 	} else {
-		alert("The username is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
+		alert("The username or the password is invalid, please enter a different one. These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
 	}
 }
 
