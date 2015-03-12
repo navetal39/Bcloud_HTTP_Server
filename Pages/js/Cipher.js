@@ -1,4 +1,4 @@
-key = "EXsatiSFAyinG";
+key = "OurEXsatiSFAyinG";
 
 function Encrypt(mess) {
   var encrypted = CryptoJS.AES.encrypt(mess, key);

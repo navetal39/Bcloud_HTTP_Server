@@ -100,7 +100,7 @@ def download_or_register(main_server, params):
 def register(main_server, fields_dict):
     #form_content = parsed_request[2]
     #fields_dict = get_fields_values(form_content)
-    stat = main_server.create_user(fields_dict['username'], fields_dict['password'])
+    stat = main_server.create_user(fields_dict['username'],  fields_dict['password'])
     if stat == "NIU": #deal with JS
         path = NAME_IN_USE_ERROR_PATH
         status = "200"
