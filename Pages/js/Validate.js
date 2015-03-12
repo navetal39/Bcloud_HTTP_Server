@@ -37,7 +37,7 @@ function checkAndSend2() {
 	var valid = validation(username) && validation(password);
 	
 	if (valid) {
-		var enc_pass = password;//need to encrypt the password!
+		var enc_pass = Encrypt(password);//need to encrypt the password!
 		
 		var url = "http://" + sIP +":80/SigningUp?username=" + username + "&password=" + enc_pass;
 		window.open(url, "_self");
