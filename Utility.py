@@ -1,13 +1,5 @@
 # INFO: #
 # ===================================
-"""
-TO DO:
-    Add last update to last update page...
-"""
-
-
-
-
 
 # Constants: #
 ## Pahts: ##

@@ -1,13 +1,13 @@
 # INFO: #
-# No Encryption nor https (tls/ssl).
 # ===================================
 
 print 'http'
 
 '''
 TO DO:
-    1. Find how to add the last update to last update page, then implement it.
-    2. Add TLS!
+1) Encrypt/Decrypt the passwords in the registery section
+2) Find how to add the last update to last update page, then implement it.
+3) Add TLS?
     
 '''
 
@@ -17,6 +17,7 @@ TO DO:
 import re, urlparse, socket, Queue
 from threading import Thread
 from Utility import *
+from RECURRING_FUNCTIONS import secure_accept, secure_recv, secure_send, secure_close
 
 
 
@@ -34,30 +35,6 @@ MOVED = {"":"Pages/index.htm", "favicon.ico":"Pages/favicon.ico"}
 
 
 # Methods: #
-## SSL/TLS Methods: ##
-def secure_accept(server_socket):
-    ''' This method needs to accept a new client and establish a secure TCP connection with him (over SSL/TLS).
-        It will return exacly what the normal accept method returns UNLESS we will need to change it.
-    '''
-    cs,ca = server_socket.accept()
-    return (cs, ca)
-
-def secure_recv(sock, size = 5000):
-    ''' This method needs to receive the encrypted message (the ciphertext), decrypt it and return the plaintext.
-    '''
-    return sock.recv(size)
-
-def secure_send(sock, mess):
-    ''' This method needs to get the message (the plaintext), encrypt it and send it (the ciphertext).
-    '''
-    print "sending {m}".format(m=mess) # -For The Record-
-    sock.send(mess)
-
-def secure_close(sock):
-    ''' This method needs to...
-    '''
-    sock.close()
-
 ## Small Help Methods: ##
 def decide_type(req):
     GET_request_pattern = "GET .* HTTP/1.1\r\n.*"
