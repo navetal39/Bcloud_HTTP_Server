@@ -1,7 +1,7 @@
 function validation(str) {
 	var forbidden = ['|','\\', '/', ':', '*', '?', '"', '<', '>'];
 	
-	if ((str.length < 4) || (str.length > 31) { return false; }
+	if ((str.length < 4) || (str.length > 31)) { return false; }
 	
 	for (var i=0; i < forbidden.length; i++) {
 		if (str.indexOf(forbidden[i]) >= 0) { //If this is true, so the string is invalid.
@@ -39,9 +39,9 @@ function checkAndSend2() {
 	var valid = validation(username) && validation(password);
 	
 	if (valid) {
-		var enc_pass = Encrypt(password);//need to encrypt the password!
+		var enc_pass = Hash(password);
 		
-		var url = "http://" + sIP +":80/SigningUp?username=" + username + "&password=" + enc_pass;
+		var url = "http://" + sIP + ":80/SigningUp?username=" + username + "&password=" + enc_pass;
 		window.open(url, "_self");
 	} else {
 		alert("The username or the password is invalid or too short, please enter a different one. The length needs to be 4 to 31 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
