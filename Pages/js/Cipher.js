@@ -1,16 +1,9 @@
-key = "OurEXsatiSFAyinG";
-
 function Encrypt(mess) {
-  var encrypted = CryptoJS.AES.encrypt(mess, key);
-	return encrypted;
+  var hash = CryptoJS.SHA256(mess);
+	return hash;
 }
 
 /*
-function Decrypt(enc_mess) {
-  var decrypted = CryptoJS.AES.decrypt(enc_mess, key);
-	return decrypted;
-}
-
-/*
-
+Exciting. Satisfying. Period.
+.
 */
