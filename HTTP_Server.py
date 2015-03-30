@@ -135,7 +135,10 @@ def do_work():
             finally:
                 if folder_flag:
                     cont = get_folder(thread_server, name)
-                    secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
+                    if cont == "WTF":
+                        send_status(ERROR_404_PATH, read_type, "404", client_socket)
+                    else:
+                        secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                 else:
                     send_status(path, read_type, status, client_socket)
         
