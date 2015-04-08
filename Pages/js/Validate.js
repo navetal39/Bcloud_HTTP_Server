@@ -12,18 +12,18 @@ function validation(str) {
 	return true;
 }
 
-var sIP = "localhost"; /* <<<<<< This is the server's IP address. <<<<<< */
+var sIP = location.hostname; /* <<<<<< This is the server's IP address. <<<<<< */
+if (sIP == "") { sIP = "localhost"; }
 
 /* For the FolderDownload page: */
 function checkAndSend1() {
-	//var sIP = "localhost"; // This is the server's IP address.
 	
 	var username = document.getElementById('username').value;
 	
 	var valid = validation(username);
 	
 	if (valid) {
-		var url = "http://" + sIP + ":8080/Downloading?username=" + username;
+		var url = "http://" + sIP + ":80/Downloading?username=" + username;
 		window.open(url, "_self");
 	} else {
 		alert("The username is invalid or too short, please enter a different one. The length needs to be 4 to 31 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
