@@ -16,7 +16,7 @@ TO DO:
 import re, urlparse, socket, Queue
 from threading import Thread
 from Utility import *
-from RECURRING_FUNCTIONS import secure_accept, secure_recv, secure_send, secure_close
+# from RECURRING_FUNCTIONS import secure_accept, secure_recv, secure_send, secure_close
 
 
 
@@ -81,7 +81,7 @@ def send_status(path, read_type, status, sock):
         data = open(path, read_type).read()
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data), xh=extra_header)
     status_line = STATUS_LINES[status]
-    secure_send(sock, status_line+headers+"\r\n"+data)
+    sock.send(status_line+headers+"\r\n"+data)
     
 
 ## General Methods: ##
@@ -93,9 +93,9 @@ def do_work():
     thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
     
     while True:
-        req = secure_recv(client_socket)
+        req = client_socket.recv(5000)
         if req == "":
-            secure_close(client_socket)
+            client_socket.close()
             print "Closed connection" # -For The Record-
             q.task_done()
             break
@@ -138,7 +138,7 @@ def do_work():
                     if cont == "WTF":
                         send_status(ERROR_404_PATH, read_type, "404", client_socket)
                     else:
-                        secure_send(client_socket, 'HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
+                        client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                 else:
                     send_status(path, read_type, status, client_socket)
         
@@ -167,7 +167,7 @@ def run():
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
-        client_socket, client_addr = secure_accept(server_socket)
+        client_socket, client_addr = server_socket.accept()
         print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
 
