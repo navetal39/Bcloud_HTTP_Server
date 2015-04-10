@@ -115,6 +115,21 @@ def do_work():
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
                             read_type = "rb"
+                        elif path == "Files/client.zip":
+                            client_zip = open("Files/client.zip", 'rb')
+                            client_cont = client_zip.read()
+                            cont_len = len(cont)
+                            client_socket.send(cont_len)
+                            resp = client_socket.recv(4)
+                            if resp == 'ACK':
+                                client_socket.send(cont)
+                            else:
+                                raise # Shouldn't get here at all...
+                            final_resp = client_sock.recv(4)
+                            if final_resp == '':
+                                client_socket.close()
+                                print "Closed connection" # -For The Record-
+                                q.task_done()
                         if path_exists(path):
                             status = "200"
                         elif path in MOVED.keys():
