@@ -13,6 +13,17 @@
 	<link rel="stylesheet" type="text/css" href="css/General.css">
 	<link rel="stylesheet" type="text/css" href="css/LastUpdatePlus.css">
 	<!-- Here you add CSS stylesheet -->
+	
+	<script type="text/javascript">
+		var sIP = location.host; /* <<<<<< This is the server's IP address. <<<<<< */
+		if (sIP == "") { sIP = "localhost"; }
+
+		function get_last_update() {
+			var username = document.getElementById('username').innerHTML;
+			var url = "http://" + sIP + "/Downloading?username=" + username + "&is_approved=YES";
+			window.open(url, "_self");
+		}
+	</script>
 </head>
 
 <!--========================================================================================-->
@@ -34,9 +45,9 @@
 
 	<section>
 		<h1>Share</h1>
-		<p>The last time {UN} updated his/her public folder was {LUD}.</p>
+		<p>The last time <span id="username">{UN}</span> updated his/her public folder was {LUD}.</p>
 		<p><strong>Are you sure you want to download {UN}'s public folder?</strong></p>
-		<span><a class="outButtonYes">Yes</a></span><span><a class="outButtonNo">No</a></span>
+		<span><a class="outButtonYes" onclick="get_last_update()">Yes</a></span><span><a class="outButtonNo" href="index.htm">No</a></span>
 	</section>
 	
 
