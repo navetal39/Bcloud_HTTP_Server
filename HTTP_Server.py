@@ -72,10 +72,13 @@ def parse_req(req):
 
     return (parsed_status_line, headers, content)
 
-def send_status(path, read_type, status, sock):
+def send_status(path, read_type, status, sock, last_update=None, username=None):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
+    elif last_update:
+        extra_header = ""
+        data = open(path, read_type).read().format(UN=username, LUD=last_update)
     else:
         extra_header = ""
         data = open(path, read_type).read()
@@ -105,9 +108,9 @@ def do_work():
                 req_type = decide_type(req)
                 parsed_request = parse_req(req)
                 if req_type == "GET":
-                    print "have a 'GET' request:\n", req # -For The Record-
+                    print "have a 'GET' request:\n", req
                     url = parsed_request[0]['url']
-                    print url
+                    print "url: ", url
                     parsed_url = urlparse.urlparse(url)
                     print "parsed"
                     path = parsed_url.path.lstrip('/')
@@ -116,7 +119,7 @@ def do_work():
                     print "param: ", params
                     if params: # Download or registery
                         print "params if"
-                        status, path, folder_flag, name = download_or_register(thread_server, params)
+                        status, path, folder_flag, name, last_update = download_or_register(thread_server, params)
                     else: # Normal 'GET'
                         print "normal GET"
                         if path == "favicon.ico":
@@ -138,12 +141,6 @@ def do_work():
                             else:
                                 raise # Shouldn't get here at all...
                             client_flag = True
-                            '''final_resp = client_socket.recv(3)
-                            if final_resp == '':
-                                client_socket.close()
-                                print "Closed connection" # -For The Record-
-                                q.task_done()
-                                break'''
                         if path_exists(path):
                             status = "200"
                         elif path in MOVED.keys():
@@ -169,10 +166,12 @@ def do_work():
                         send_status(ERROR_404_PATH, read_type, "404", client_socket)
                     else:
                         client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
+                        
                 elif client_flag:
                     pass
+                    
                 else:
-                    send_status(path, read_type, status, client_socket)
+                    send_status(path, read_type, status, client_socket, last_update, name)
         
         
 def make_threads_and_queue(num, size):

@@ -1,0 +1,52 @@
+span {
+	margin:1.5px;
+}
+
+/* For the 'Yes' button: */
+.outButtonYes {
+	background-color:#44c767;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #18ab29;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:arial;
+	font-size:17px;
+	padding:6px 23px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #2f6627;
+}
+.outButtonYes:hover {
+	background-color:#5cbf2a;
+}
+.outButtonYes:active {
+	position:relative;
+	top:1px;
+}
+
+
+/* For the 'No' button: */
+.outButtonNo {
+	background-color:#c74545;
+	-moz-border-radius:28px;
+	-webkit-border-radius:28px;
+	border-radius:28px;
+	border:1px solid #ab1919;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:arial;
+	font-size:17px;
+	padding:6px 23px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #662828;
+}
+.outButtonNo:hover {
+	background-color:#bd2a2a;
+}
+.outButtonNo:active {
+	position:relative;
+	top:1px;
+}

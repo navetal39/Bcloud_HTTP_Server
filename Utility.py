@@ -46,7 +46,7 @@ def path_exists(path):
     return isfile(path)
 
 def download_or_register(main_server, params):
-    folder_flag = False
+    folder_flag = False; last_update = None
     try:
         params_dict = get_fields_values(params)
     except:
@@ -55,7 +55,7 @@ def download_or_register(main_server, params):
     if len(params_dict.keys()) == 1 and "username" in params_dict.keys(): # Download - first part.
         name = params_dict["username"]
         stat, data = main_server.get_last_update(name, 'public')
-        if stat == "NNM": #deal with JS
+        if stat == "NNM":
             path = NO_NAME_ERROR_PATH
             status = "200"
         elif stat == "EMP":
@@ -64,12 +64,13 @@ def download_or_register(main_server, params):
         elif stat == "SCS":
             path = LAST_UPDATE_PLUS_PATH # Add last update...!
             status = "200"
+            last_update = data
         else:
             raise
         
     elif len(params_dict.keys()) == 2 and "username" in params_dict.keys() and "is_approved" in params_dict.keys() : # Download - second part.
         value = params_dict["is_approved"]
-        if value == "YES": # Partial implementetion, need to add distinguishing things with URI, etc.!
+        if value == "YES":
             path = HE_SAID_YES_PATH; status = "200" # Just in case
             folder_flag = True
         elif value == "NO":
@@ -87,7 +88,7 @@ def download_or_register(main_server, params):
         status = "404"
         path = ERROR_404_PATH
         
-    return status, path, folder_flag, params_dict["username"]
+    return status, path, folder_flag, params_dict["username"], last_update
 
 def register(main_server, fields_dict):
     #form_content = parsed_request[2]
