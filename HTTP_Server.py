@@ -86,9 +86,11 @@ def send_status(path, read_type, status, sock):
 
 ## General Methods: ##
 def do_work():
+    print "started"
     client_socket, client_addr = q.get()
     read_type = "r"
     folder_flag = False
+    client_flag = False
     name = ""
     thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
     
@@ -124,19 +126,25 @@ def do_work():
                         elif path == "Files/client.zip":
                             print "client if"
                             client_zip = open("Files/client.zip", 'rb')
+                            print "opened zip"
                             client_cont = client_zip.read()
+                            print "read cont"
                             cont_len = len(client_cont)
                             client_socket.send(str(cont_len))
-                            resp = client_socket.recv(4)
+                            print "sent len"
+                            resp = client_socket.recv(3)
+                            print "recved"
                             if resp == 'ACK':
-                                client_socket.send(cont)
+                                client_socket.send(client_cont)
                             else:
                                 raise # Shouldn't get here at all...
-                            final_resp = client_sock.recv(4)
+                            client_flag = True
+                            '''final_resp = client_socket.recv(3)
                             if final_resp == '':
                                 client_socket.close()
                                 print "Closed connection" # -For The Record-
                                 q.task_done()
+                                break'''
                         if path_exists(path):
                             status = "200"
                         elif path in MOVED.keys():
@@ -162,6 +170,8 @@ def do_work():
                         send_status(ERROR_404_PATH, read_type, "404", client_socket)
                     else:
                         client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
+                elif client_flag:
+                    pass
                 else:
                     send_status(path, read_type, status, client_socket)
         
