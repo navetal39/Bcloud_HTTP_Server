@@ -2,7 +2,7 @@ import socket, os, zipfile
 
 http_ip = '127.0.0.1'
 sync_ip = '127.0.0.1'
-http_port = 92
+http_port = 81
 sync_port = 5126
 
 # Get data from server

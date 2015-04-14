@@ -86,7 +86,6 @@ def send_status(path, read_type, status, sock):
 
 ## General Methods: ##
 def do_work():
-    print "started"
     client_socket, client_addr = q.get()
     read_type = "r"
     folder_flag = False
