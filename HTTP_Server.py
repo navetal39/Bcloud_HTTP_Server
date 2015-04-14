@@ -106,20 +106,27 @@ def do_work():
                 if req_type == "GET":
                     print "have a 'GET' request:\n", req # -For The Record-
                     url = parsed_request[0]['url']
+                    print url
                     parsed_url = urlparse.urlparse(url)
+                    print "parsed"
                     path = parsed_url.path.lstrip('/')
+                    print path
                     params = parsed_url.query
+                    print "param: ", params
                     if params: # Download or registery
+                        print "params if"
                         status, path, folder_flag, name = download_or_register(thread_server, params)
                     else: # Normal 'GET'
+                        print "normal GET"
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
                             read_type = "rb"
                         elif path == "Files/client.zip":
+                            print "client if"
                             client_zip = open("Files/client.zip", 'rb')
                             client_cont = client_zip.read()
-                            cont_len = len(cont)
-                            client_socket.send(cont_len)
+                            cont_len = len(client_cont)
+                            client_socket.send(str(cont_len))
                             resp = client_socket.recv(4)
                             if resp == 'ACK':
                                 client_socket.send(cont)
@@ -143,7 +150,8 @@ def do_work():
                     path = ERROR_405_PATH
                     #status, path = register(thread_server, parsed_request)
                 
-            except: # That's an Internal Server Error (500)
+            except Exception, e: # That's an Internal Server Error (500)
+                print "Error", e
                 status = "500"
                 path = ERROR_500_PATH
 
