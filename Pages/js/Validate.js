@@ -23,7 +23,7 @@ function checkAndSend1() {
 	var valid = validation(username);
 	
 	if (valid) {
-		var url = "http://" + sIP + ":80/Downloading?username=" + username;
+		var url = "http://" + sIP + "/Downloading?username=" + username;
 		window.open(url, "_self");
 	} else {
 		alert("The username is invalid or too short, please enter a different one. The length needs to be 4 to 31 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
@@ -41,7 +41,7 @@ function checkAndSend2() {
 	if (valid) {
 		var enc_pass = Hash(password);
 		
-		var url = "http://" + sIP + ":80/SigningUp?username=" + username + "&password=" + enc_pass;
+		var url = "http://" + sIP + "/SigningUp?username=" + username + "&password=" + enc_pass;
 		window.open(url, "_self");
 	} else {
 		alert("The username or the password is invalid or too short, please enter a different one. The length needs to be 4 to 31 characters. In addition, These characters are forbidden: '|','\\', '/', ':', '*', '?', '\"', '<', '>'");
