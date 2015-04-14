@@ -13,6 +13,23 @@
 	<link rel="stylesheet" type="text/css" href="css/General.css">
 	<link rel="stylesheet" type="text/css" href="css/Download.css">
 	<!-- Here you add CSS stylesheet -->
+	
+	 <!-- Some CSS code to overwrite some other CSS code in 'General.css' that is not wanted here:
+	 ––––––––––––––––––––––––––––––––––––––––––––––––––--->
+	<style type="text/css">
+		section a:link {
+			color:grey;
+			text-decoration:none;
+		}
+
+		section a:hover {
+			text-decoration:underline;
+		}
+
+		section a:visited {
+			color:grey;
+		}
+	</style>
 </head>
 
 <!--========================================================================================-->
@@ -33,6 +50,7 @@
 	
 
 	<section>
+		<p class="ErrorMessage">Important: You must download and install 'python 2.7' if you want to use our 	product. You can download 'python 2.7' from <a href="https://www.python.org/downloads/">here</a>.</p>
 		<p><a class="outButton" href="../files/Bcloud_installer.py" download="Bcloud_installer.py">The program</a></p> <!-- Need to be updated in the future -->
 		<p><a class="outButton" href="FolderDownload.htm">Shared files</a></p>
 	</section>

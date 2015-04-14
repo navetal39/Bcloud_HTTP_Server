@@ -1,0 +1,21 @@
+ol#inst {
+	margin-top:0;
+	margin-bottom:6px;
+	padding-right:5px;
+}
+
+ol#inst li {
+	margin: 1.2px 0;
+}
+
+h3#Hinst {
+	margin-top:4px;
+	margin-bottom:1px;
+}
+
+div#Dinst {
+	width:50%;
+	margin-left:auto;
+	margin-right:auto;
+	border:5px solid white;
+}

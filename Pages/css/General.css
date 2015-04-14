@@ -44,7 +44,16 @@ section p {
 	section p {	width:98%;	}	
 }
 
+h1 { font-size:1.8em; }
+
+.ErrorMessage {
+	color:red;
+	font-weight:bold;
+	font-size:1.1em;
+}
+
 /* a tag cool thiny: */
+/* -1- */
 nav#top a {
 	font-size:2em;
 }
@@ -61,13 +70,32 @@ nav a:hover {
 nav a:visited {
 	color:#008200;
 }
+/* -2- */
+.ErrorMessage a:link {
+	color:#cc0000;
+	text-decoration:none;
+}
 
-h1 { font-size:1.8em; }
+.ErrorMessage a:hover {
+	text-decoration:underline;
+}
 
-.ErrorMessage {
-	color:red;
-	font-weight:bold;
-	font-size:1.1em;
+.ErrorMessage a:visited {
+	color:#cc0000;
+}
+
+/* -3- */
+section a:link {
+	color:#e0e0e0;
+	text-decoration:none;
+}
+
+section a:hover {
+	text-decoration:underline;
+}
+
+section a:visited {
+	color:#e0e0e0;
 }
 
 /*

@@ -11,6 +11,7 @@
 		<!-- CSS:
   ––––––––––––––––––––––––––––––––––––––––––––––––––--->
 	<link rel="stylesheet" type="text/css" href="css/General.css">
+	<link rel="stylesheet" type="text/css" href="css/SignUp.css">
 	<!-- Here you add CSS stylesheet -->
 	
 		<!-- Javascript:
@@ -39,16 +40,25 @@
 
 	<section>
 		<h1>Sign Up</h1>
-		<p>Here you can sign up to our service. After you sign up, you need to download our program and sign in to your user from the program. <br><br>
-		MORE INSTRUCTIONS WILL BE ADDED IN THE FUTURE. </p>
+		<p><strong>Here you can sign up to our service. After you sign up, you need to download our program and sign in to your user from the program.</strong></p>
+		<p class="ErrorMessage">Important: You must download and install 'python 2.7' if you want to use our product. You can download 'python 2.7' from <a href="https://www.python.org/downloads/">here</a>.</p>
+		<div id="Dinst">
+			<h3 id="Hinst">Instructions:</h3>
+			<ol id="inst">
+				<li>Sign up here. Be aware the the following characters are forbidden for use: '|','\', '/', ':', '*', '?', '"', '<', '>'. Furthermore, your username and your password must be at least 4 characters long, and cannot be greater then 31 in length.</li>
+				<li>If you haven't installed 'python 2.7' yet - do it now according to the text in red that is seen above. If you have - proceed to the next step.</li>
+				<li>Download the Bcloud installer from the downloads page.</li>
+				<li>Run the Bcloud installer and follow the instructions (of course not these, the instructions that are in it).</li>
+				<li>After you install Bcloud choose the 'run' or 'run.bat' file and run it. Then log in to your account and only then your synced folder will be created.</li>
+				<li>Enjoy our product and stay in touch!</li>
+			</ol>
+		</div>
 		
 		<form>
 			<p><label>Username: <input type="text" id="username"></label></p>
 			<p><label>Password: <input type="password" id="password"></label></p>
 			<p><input type="button" value="Submit" onclick="checkAndSend2()"></p>
 		</form>
-		
-		<a href="SignUpApproval.htm">The page that will be after the form, this link is temporary.</a>
 	</section>
 	
 
