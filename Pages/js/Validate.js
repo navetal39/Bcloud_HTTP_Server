@@ -12,7 +12,7 @@ function validation(str) {
 	return true;
 }
 
-var sIP = location.hostname; /* <<<<<< This is the server's IP address. <<<<<< */
+var sIP = location.host; /* <<<<<< This is the server's IP address. <<<<<< */
 if (sIP == "") { sIP = "localhost"; }
 
 /* For the FolderDownload page: */
