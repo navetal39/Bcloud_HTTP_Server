@@ -65,24 +65,9 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         sock = self.MAIN_SOCKET
         self.connect()
         sock.send('GET|{}'.format(folder_name))
-        response = sock.recv(2048) ################## Why not file_recv()? ########################
-        flag, str_size = response.split('|')
-        try:
-            if flag != 'SIZ':
-                raise
-            size = int(str_size)
-        except:
-            if count < 3: #Just making sure that it won't attempt endlessly
-                sock.send('NAK|'+response)
-                final_response = self.get_folder(sock, folder_name, count+1)
-            else:
-                final_response = 'WTF'
-        else:
-            sock.send('ACK|'+response)
-            final_response = sock.recv(size)
-        finally:
-            self.disconnect()
-            return final_response
+        final_response = file_recv(sock)
+        self.disconnect()
+        return final_response
 
 '''
 Exciting. Satisfying. Period.
