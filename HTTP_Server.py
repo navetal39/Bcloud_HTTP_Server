@@ -91,14 +91,19 @@ def send_status(path, read_type, status, sock, last_update=None, username=None):
 def do_work():
     client_socket, client_addr = q.get()
     read_type = "r"
-    folder_flag = False
-    client_flag = False
+    folder_flag = False; client_flag = False; last_update = None
     name = ""
     thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
     
     while True:
-        req = client_socket.recv(4096)
-        print 'got request'
+        try:
+            req = client_socket.recv(4096)
+            print 'got request'
+        except Exception, e: # If you come from IE (But why??)...
+            print e
+            print e.errno
+            if e.errno == 10054:
+                req = ""
             
         if req == "":
             client_socket.close()
