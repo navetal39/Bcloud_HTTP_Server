@@ -5,6 +5,7 @@
 
 
 import socket, time
+from RECURRING_FUNCTIONS import file_recv
 
 
 class Server(object): # The HTTP server sees is as a server, the main server sees it as a client. Relativity! WOOHOO!
@@ -31,7 +32,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         message = "REG|{n}|{p}".format(n=name, p=pw)
         self.connect()
         self.MAIN_SOCKET.send(message)
-        resp = self.MAIN_SOCKET.recv(1024)
+        resp = self.MAIN_SOCKET.recv(5000)
         self.disconnect()
         resp_parts = resp.split('|')
         flag = resp_parts[0]; resp_parts.remove(flag)
@@ -46,15 +47,22 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         self.MAIN_SOCKET.send(message)
         data = file_recv(self.MAIN_SOCKET)
         self.disconnect()
-        data_list = data.split('\n')
-        times = []
-        for pair in data_list:
-            try:
-                times.append(float(pair.split(':')[1]))
-            except:
-                continue
-        latest = max(times)
-        return flag, time.asctime(time.localtime(latest))
+        if data == "EMPTY":
+            return "EMP", None
+        elif data == "NNM":
+            return "NNM", None
+        elif data == "SCS":
+            data_list = data.split('\n')
+            times = []
+            for pair in data_list:
+                try:
+                    times.append(float(pair.split(':')[1]))
+                except:
+                    continue
+            latest = max(times)
+            return "SCS", time.asctime(time.localtime(latest))
+        else:
+            raise
         
     def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response

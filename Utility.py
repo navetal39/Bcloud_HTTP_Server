@@ -22,7 +22,7 @@ from COM import MAIN_SERVER_PORT, MAIN_SERVER_IP
 
 # Imports: #
 import socket
-from Main_Server_Com import Server
+from Main_Server_Com import *
 from os.path import isfile
 
 
@@ -62,11 +62,9 @@ def download_or_register(main_server, params):
             path = EMPTY_FOLDER_ERROR_PATH
             status = "200"
         elif stat == "SCS":
-            path = LAST_UPDATE_PLUS_PATH # Add last update...!
+            path = LAST_UPDATE_PLUS_PATH
             status = "200"
             last_update = data
-        else:
-            raise
         
     elif len(params_dict.keys()) == 2 and "username" in params_dict.keys() and "is_approved" in params_dict.keys() : # Download - second part.
         value = params_dict["is_approved"]
