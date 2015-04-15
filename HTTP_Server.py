@@ -98,7 +98,7 @@ def do_work():
     
     while True:
         req = client_socket.recv(4096)
-        print 'got request
+        print 'got request'
             
         if req == "":
             client_socket.close()
