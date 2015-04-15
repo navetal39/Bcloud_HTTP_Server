@@ -72,17 +72,6 @@ def parse_req(req):
 
     return (parsed_status_line, headers, content)
 
-def get_length_from_pre_req(req):
-    header_lines_list = req.split('\r\n')
-    status_line = header_lines_list[0]; header_lines_list.remove(status_line)
-    print status_line
-    headers_list = header_lines_list
-    for h in headers_list:
-        print h
-        name, cont = h.split(': ')
-        if name.upper() == "Content-length".upper():
-            return int(cont)
-
 def send_status(path, read_type, status, sock, last_update=None, username=None):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
@@ -108,21 +97,8 @@ def do_work():
     thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
     
     while True:
-        req = client_socket.recv(2048)
-        print 'got initial request'
-        # Receive everything mechanism:
-        while True:
-            cont_len = get_length_from_pre_req(req)
-            print cont_len
-            if cont_len == None: #That means this header havn't been gotten yet.
-                req+= client_socket.recv(2048)
-                print 'got more stuff'
-            else:
-                print 'got len'
-                while (len(req) < cont_len):
-                    req += client_socket.recv(cont_len-len(req))
-                    print 'got rest of stuff'
-                break
+        req = client_socket.recv(4096)
+        print 'got request
             
         if req == "":
             client_socket.close()
