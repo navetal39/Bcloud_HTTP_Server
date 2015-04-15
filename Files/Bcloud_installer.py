@@ -39,4 +39,4 @@ config.write("SYNC_IP = '{}'\nSYNC_PORT = {}\nFOLDERS_LOCATION = '{}'\nTIME_BETW
 config.close()
 
 print 'Bcloud has been installed successfully'
-raw_input('Press any key to continue...')
+raw_input('Press enter to continue...')
