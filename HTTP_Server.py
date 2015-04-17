@@ -27,7 +27,7 @@ SIZE_OF_QUEUE = 40
 
 ## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 Not Found\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
-                "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error", "405": "HTTP/1.1 405 Method Not Allowed"}
+                "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error\r\n", "405": "HTTP/1.1 405 Method Not Allowed"}
 MOVED = {"":"Pages/index.htm", "index.htm":"Pages/index.htm", "favicon.ico":"Pages/favicon.ico"}
 
 

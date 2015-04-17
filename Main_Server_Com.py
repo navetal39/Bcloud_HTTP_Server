@@ -51,7 +51,9 @@ class Server(object): # The HTTP server sees is as a server, the main server see
             return "EMP", None
         elif data == "NNM":
             return "NNM", None
-        elif data == "SCS":
+        elif data == "WTF":
+            raise
+        else:
             data_list = data.split('\n')
             times = []
             for pair in data_list:
@@ -61,8 +63,6 @@ class Server(object): # The HTTP server sees is as a server, the main server see
                     continue
             latest = max(times)
             return "SCS", time.asctime(time.localtime(latest))
-        else:
-            raise
         
     def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
