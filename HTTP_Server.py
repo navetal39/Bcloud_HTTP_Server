@@ -24,6 +24,8 @@ from Utility import *
 ## General: ##
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
+PICS_EXTENTIONS = ['.jpeg', '.jpg', '.png', '.gif', '.ico']
+PICS_TYPES = {'.jpeg': 'image/jpeg', '.jpg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.ico': 'image/x-icon'}
 
 ## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 Not Found\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
@@ -72,15 +74,32 @@ def parse_req(req):
 
     return (parsed_status_line, headers, content)
 
-def send_status(path, read_type, status, sock, last_update=None, username=None):
+def is_picture(path):
+    for ext in PICS_EXTENTIONS:
+        if path.lower().endswith(ext):
+            return True
+
+def get_image_type(path):
+    pre_type = ""
+    for ext in PICS_EXTENTIONS:
+        if path.lower().endswith(ext):
+            pre_type = ext
+            break
+    return PICS_TYPES[pre_type]
+
+def send_status(path, status, sock, last_update=None, username=None):
+    read_type = 'r'
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
     elif last_update and path == LAST_UPDATE_PLUS_PATH:
         extra_header = ""
         print 'opening (in LU) ' + path
-        data = open(path, read_type).read().format(UN=username, LUD=last_update)
+        data = open(path, 'r').read().format(UN=username, LUD=last_update)
         print "opened (in LU) " + path
+    elif is_picture(path):
+        extra_header = "Content-type: {}\r\n".format(get_image_type(path))
+        read_type = 'rb'    
     else:
         extra_header = ""
         print 'opening (in normal) ' + path
@@ -94,7 +113,6 @@ def send_status(path, read_type, status, sock, last_update=None, username=None):
 ## General Methods: ##
 def do_work():
     client_socket, client_addr = q.get()
-    read_type = "r"
     folder_flag = False; client_flag = False; last_update = None
     name = ""
     thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
@@ -135,7 +153,6 @@ def do_work():
                         print "normal GET"
                         if path == "favicon.ico":
                             path = "Pages/favicon.ico"
-                            read_type = "rb"
                         elif path == "Files/client.zip":
                             print "client if"
                             client_zip = open("Files/client.zip", 'rb')
@@ -174,7 +191,7 @@ def do_work():
                 if folder_flag:
                     cont = get_folder(thread_server, name)
                     if cont == "WTF":
-                        send_status(ERROR_404_PATH, read_type, "404", client_socket)
+                        send_status(ERROR_404_PATH, "404", client_socket)
                     else:
                         client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                         
@@ -182,7 +199,7 @@ def do_work():
                     pass
                     
                 else:
-                    send_status(path, read_type, status, client_socket, last_update, name)
+                    send_status(path, status, client_socket, last_update, name)
         
         
 def make_threads_and_queue(num, size):
