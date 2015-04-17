@@ -23,6 +23,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         return "################\nThe main server is (or at least should be) listening on:\nIP address: {ip}\nTCP port: {port}\n################".format(ip=self.MAIN_IP, port=self.MAIN_PORT)
 
     def connect(self):
+        self.MAIN_SOCKET = socket.socket()
         self.MAIN_SOCKET.connect((self.MAIN_IP, self.MAIN_PORT))
 
     def disconnect(self):
@@ -70,10 +71,9 @@ class Server(object): # The HTTP server sees is as a server, the main server see
             In the case the folder does not exist this function should load the dedicated
             HTML file and send it instead.
         '''
-        sock = self.MAIN_SOCKET
         self.connect()
-        sock.send('GET|{}'.format(folder_name))
-        final_response = file_recv(sock)
+        self.MAIN_SOCKET.send('GET|{}'.format(folder_name))
+        final_response = file_recv(self.MAIN_SOCKET)
         self.disconnect()
         return final_response
 
