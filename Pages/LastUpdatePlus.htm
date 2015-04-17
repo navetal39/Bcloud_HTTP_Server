@@ -14,16 +14,9 @@
 	<link rel="stylesheet" type="text/css" href="Pages/css/LastUpdatePlus.css">
 	<!-- Here you add CSS stylesheet -->
 	
-	<script type="text/javascript">
-		var sIP = location.host; /* <<<<<< This is the server's IP address. <<<<<< */
-		if (sIP == "") { sIP = "localhost"; }
-
-		function get_last_update() {
-			var username = document.getElementById('username').innerHTML;
-			var url = "http://" + sIP + "/Downloading?username=" + username + "&is_approved=YES";
-			window.open(url, "_self");
-		}
-	</script>
+	<!-- Javascript:
+  ––––––––––––––––––––––––––––––––––––––––––––––––––--->	
+	<script type="text/javascript" src="js/download_help.js"></script>
 </head>
 
 <!--========================================================================================-->
