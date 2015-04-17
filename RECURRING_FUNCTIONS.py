@@ -35,7 +35,7 @@ def file_send(sock, mess):
     size_message = 'SIZ|{}'.format(size)
     print 'sending '+size_message # -For The Record-
     sock.send('SIZ|{}'.format(size))
-    response = sock.recv(2048)
+    response = sock.recv(len(size_message) + 5)
     print 'recived '+response # -For The Record-
     response_parts = response.split('|')
     flag = response_parts[0]; response_parts.remove(flag)

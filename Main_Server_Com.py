@@ -32,7 +32,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         message = "REG|{n}|{p}".format(n=name, p=pw)
         self.connect()
         self.MAIN_SOCKET.send(message)
-        resp = self.MAIN_SOCKET.recv(5000)
+        resp = self.MAIN_SOCKET.recv(len(message) + 5)
         self.disconnect()
         resp_parts = resp.split('|')
         flag = resp_parts[0]; resp_parts.remove(flag)
