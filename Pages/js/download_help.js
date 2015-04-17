@@ -3,6 +3,6 @@ if (sIP == "") { sIP = "localhost"; }
 
 function get_last_update() {
 	var username = document.getElementById('username').innerHTML;
-	var url = "http://" + sIP + "/Downloading?username=" + username + "&is_approved=YES";
+	var url = "http://" + sIP + "/puclic_folder?username=" + username + "&is_approved=YES";
 	window.open(url, "_self");
 }
