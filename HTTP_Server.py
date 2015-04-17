@@ -76,14 +76,16 @@ def send_status(path, read_type, status, sock, last_update=None, username=None):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
-    elif last_update:
+    elif last_update and path == LAST_UPDATE_PLUS_PATH:
         extra_header = ""
-        print 'opening ' + path
+        print 'opening (in LU) ' + path
         data = open(path, read_type).read().format(UN=username, LUD=last_update)
+        print "opened (in LU) " + path
     else:
         extra_header = ""
-        print 'opening ' + path
+        print 'opening (in normal) ' + path
         data = open(path, read_type).read()
+        print "opened (in normal) " + path
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data), xh=extra_header)
     status_line = STATUS_LINES[status]
     sock.send(status_line+headers+"\r\n"+data)
