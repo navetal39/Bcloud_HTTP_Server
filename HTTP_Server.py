@@ -78,9 +78,11 @@ def send_status(path, read_type, status, sock, last_update=None, username=None):
         data = ""
     elif last_update:
         extra_header = ""
+        print 'opening ' + path
         data = open(path, read_type).read().format(UN=username, LUD=last_update)
     else:
         extra_header = ""
+        print 'opening ' + path
         data = open(path, read_type).read()
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data), xh=extra_header)
     status_line = STATUS_LINES[status]
