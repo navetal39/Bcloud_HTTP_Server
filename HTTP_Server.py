@@ -88,7 +88,6 @@ def get_image_type(path):
     return PICS_TYPES[pre_type]
 
 def send_status(path, status, sock, last_update=None, username=None):
-    read_type = 'r'
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
@@ -99,11 +98,13 @@ def send_status(path, status, sock, last_update=None, username=None):
         print "opened (in LU) " + path
     elif is_picture(path):
         extra_header = "Content-type: {}\r\n".format(get_image_type(path))
-        read_type = 'rb'    
+        print 'opening (in rb) ' + path
+        data = open(path, 'rb').read()
+        print "opened (in rb) " + path
     else:
         extra_header = ""
         print 'opening (in normal) ' + path
-        data = open(path, read_type).read()
+        data = open(path, 'r').read()
         print "opened (in normal) " + path
     headers = "Content-Length: {ln}\r\n{xh}".format(ln=len(data), xh=extra_header)
     status_line = STATUS_LINES[status]
