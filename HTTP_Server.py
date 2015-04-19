@@ -91,6 +91,10 @@ def send_status(path, status, sock, last_update=None, username=None):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
+    elif status == "404":
+        status = "301"
+        extra_header = "Location: {loc}\r\n".format(loc="/"+path)
+        data = ""
     elif last_update and path == LAST_UPDATE_PLUS_PATH:
         extra_header = ""
         print 'opening (in LU) ' + path
