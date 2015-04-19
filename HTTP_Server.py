@@ -117,94 +117,95 @@ def send_status(path, status, sock, last_update=None, username=None):
 
 ## General Methods: ##
 def do_work():
-    client_socket, client_addr = q.get()
-    folder_flag = False; client_flag = False; last_update = None
-    name = ""
-    thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
-    
     while True:
-        try:
-            req = client_socket.recv(4096)
-            print 'got request'
-        except Exception, e: # If you come from IE (But why??)...
-            print e
-            print e.errno
-            if e.errno == 10054:
-                req = ""
-            
-        if req == "":
-            client_socket.close()
-            print "Closed connection" # -For The Record-
-            q.task_done()
-            break
-        else:
+        client_socket, client_addr = q.get()
+        folder_flag = False; client_flag = False; last_update = None
+        name = ""
+        thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
+        
+        while True:
             try:
-                req_type = decide_type(req)
-                parsed_request = parse_req(req)
-                if req_type == "GET":
-                    print "have a 'GET' request:\n", req
-                    url = parsed_request[0]['url']
-                    print "url: ", url
-                    parsed_url = urlparse.urlparse(url)
-                    print "parsed"
-                    path = parsed_url.path.lstrip('/')
-                    print path
-                    params = parsed_url.query
-                    print "param: ", params
-                    if params: # Download or registery
-                        print "params if"
-                        status, path, folder_flag, name, last_update = download_or_register(thread_server, params)
-                    else: # Normal 'GET'
-                        print "normal GET"
-                        if path == "favicon.ico":
-                            path = "Pages/favicon.ico"
-                        elif path == "Files/client.zip":
-                            print "client if"
-                            client_zip = open("Files/client.zip", 'rb')
-                            print "opened zip"
-                            client_cont = client_zip.read()
-                            print "read cont"
-                            cont_len = len(client_cont)
-                            client_socket.send(str(cont_len))
-                            print "sent len"
-                            resp = client_socket.recv(3)
-                            print "recved"
-                            if resp == 'ACK':
-                                client_socket.send(client_cont)
-                            else:
-                                raise # Shouldn't get here at all...
-                            client_flag = True
-                        if path_exists(path):
-                            status = "200"
-                        elif path in MOVED.keys():
-                            status = "301"
-                        else:
-                            status = "404"
-                            path = ERROR_404_PATH
-
-                elif req_type == "POST": # 405 Method Not Allowed
-                    status = "405"
-                    path = ERROR_405_PATH
-                    #status, path = register(thread_server, parsed_request)
+                req = client_socket.recv(4096)
+                print 'got request'
+            except Exception, e: # If you come from IE (But why??)...
+                print e
+                print e.errno
+                if e.errno == 10054:
+                    req = ""
                 
-            except Exception, e: # That's an Internal Server Error (500)
-                print "Error", e
-                status = "500"
-                path = ERROR_500_PATH
+            if req == "":
+                client_socket.close()
+                print "Closed connection" # -For The Record-
+                q.task_done()
+                break
+            else:
+                try:
+                    req_type = decide_type(req)
+                    parsed_request = parse_req(req)
+                    if req_type == "GET":
+                        print "have a 'GET' request:\n", req
+                        url = parsed_request[0]['url']
+                        print "url: ", url
+                        parsed_url = urlparse.urlparse(url)
+                        print "parsed"
+                        path = parsed_url.path.lstrip('/')
+                        print path
+                        params = parsed_url.query
+                        print "param: ", params
+                        if params: # Download or registery
+                            print "params if"
+                            status, path, folder_flag, name, last_update = download_or_register(thread_server, params)
+                        else: # Normal 'GET'
+                            print "normal GET"
+                            if path == "favicon.ico":
+                                path = "Pages/favicon.ico"
+                            elif path == "Files/client.zip":
+                                print "client if"
+                                client_zip = open("Files/client.zip", 'rb')
+                                print "opened zip"
+                                client_cont = client_zip.read()
+                                print "read cont"
+                                cont_len = len(client_cont)
+                                client_socket.send(str(cont_len))
+                                print "sent len"
+                                resp = client_socket.recv(3)
+                                print "recved"
+                                if resp == 'ACK':
+                                    client_socket.send(client_cont)
+                                else:
+                                    raise # Shouldn't get here at all...
+                                client_flag = True
+                            if path_exists(path):
+                                status = "200"
+                            elif path in MOVED.keys():
+                                status = "301"
+                            else:
+                                status = "404"
+                                path = ERROR_404_PATH
 
-            finally:
-                if folder_flag:
-                    cont = get_folder(thread_server, name)
-                    if cont == "WTF":
-                        send_status(ERROR_404_PATH, "404", client_socket)
-                    else:
-                        client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
-                        
-                elif client_flag:
-                    pass
+                    elif req_type == "POST": # 405 Method Not Allowed
+                        status = "405"
+                        path = ERROR_405_PATH
+                        #status, path = register(thread_server, parsed_request)
                     
-                else:
-                    send_status(path, status, client_socket, last_update, name)
+                except Exception, e: # That's an Internal Server Error (500)
+                    print "Error", e
+                    status = "500"
+                    path = ERROR_500_PATH
+
+                finally:
+                    if folder_flag:
+                        cont = get_folder(thread_server, name)
+                        if cont == "WTF":
+                            send_status(ERROR_404_PATH, "404", client_socket)
+                        else:
+                            client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
+                            
+                    elif client_flag:
+                        pass
+                        
+                    else:
+                        send_status(path, status, client_socket, last_update, name)
         
         
 def make_threads_and_queue(num, size):

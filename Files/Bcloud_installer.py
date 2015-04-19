@@ -18,11 +18,28 @@ sock.close()
 print "Got data"
 
 # Get info from user
-program_location = raw_input("Enter the path for the directory in which you wish to put the program's files: ")
-sync_location = raw_input("Enter the path for the directory in which you wish to put the Bcloud directory (for sync): ")
-sync_time = raw_input("Enter the ammount of time you wish to have between syncs, in seconds: ")
-if not os.path.exists(program_location):
-    os.makedirs(program_location)
+while True:
+    program_location = raw_input("Enter the path for the directory in which you wish to put the program's files: ")
+    if not os.path.exists(program_location):
+        print "PATH DOES NOT EXIST."
+    else:
+        program_location += '/BcloudFiles'
+        os.makedirs(program_location)
+        break
+while True:
+    sync_location = raw_input("Enter the path for the directory in which you wish to put the Bcloud directory (for sync): ")
+    if not os.path.exists(sync_location):
+        print "PATH DOES NOT EXIST."
+    else:
+        break
+while True:
+    sync_time = raw_input("Enter the amount of time you wish to have between syncs, in seconds: ")
+    try:
+        int(sync_time)
+    except ValueError:
+        print "AN INTIGER, NOTHING ELSE!"
+    else:
+        break
 
 # Extract data into location
 zip_file = open(program_location + '/temp.zip', 'wb')
