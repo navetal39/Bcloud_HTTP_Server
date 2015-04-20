@@ -92,7 +92,7 @@ def send_status(path, status, sock, last_update=None, username=None):
     if status == "301":
         extra_header = "Location: {loc}\r\n".format(loc=MOVED[path])
         data = ""
-    elif status == "404": # To solve a specific problem with the paths:
+    elif status == "404": # To solve a specific problem with the paths in the 404 page:
         status = "301"
         extra_header = "Location: {loc}\r\n".format(loc="/"+path)
         data = ""
@@ -101,7 +101,7 @@ def send_status(path, status, sock, last_update=None, username=None):
         print 'opening (in LU) ' + path
         data = open(path, 'r').read().format(UN=username, LUD=last_update) # Insert the username and tha last update to the HTML page.
         print "opened (in LU) " + path
-    elif is_picture(path): # Pictures require spiecel extra header "Content-type":
+    elif is_picture(path): # Pictures require spiecal extra header "Content-type":
         extra_header = "Content-type: {}\r\n".format(get_image_type(path))
         print 'opening (in rb) ' + path
         data = open(path, 'rb').read()
@@ -121,20 +121,20 @@ def do_work():
     ''' The method that the Thread does.
     '''
     while True:
-        client_socket, client_addr = q.get()
-        folder_flag = False; client_flag = False; last_update = None
-        name = ""
-        thread_server = get_server_for_thread() # It is an object representing a *client* of the main server.
+		#  Get task, intial things...:
+        client_socket, client_addr = q.get() #New client to handle!
+        folder_flag = False; client_flag = False; last_update = None # Flags, see use below...
+        name = "" # So there won't be a "Referenced before assignment error"...
+        thread_server = get_server_for_thread() # Getting the object that represents a *client* of the main server.
         
         while True:
             try:
                 req = client_socket.recv(4096)
-                print 'got request'
-            except Exception, e: # If you come from IE (But why??)...
-                print e
-                print e.errno
-                if e.errno == 10054:
-                    req = ""
+				print 'got request' # -For The Debug-
+            except Exception, e: # If there is a problem receiving from the client - we close the connection:
+                print e # -For The Debug-
+                print e.errno # -For The Debug-
+				req = "" # Well actually, we change 'req' to contain nothing so it will be closed as all other connections are.
                 
             if req == "": # When a client closes the connection - the server receives an empty string.
                 client_socket.close()
@@ -143,42 +143,46 @@ def do_work():
                 break
             else:
                 try:
+					# Determine request type: #
                     req_type = decide_type(req)
-                    parsed_request = parse_req(req)
                     if req_type == "GET":
-                        print "have a 'GET' request:\n", req
+						# Get ready to handle: #
+                        print "have a 'GET' request:\n", req # -For The Record-
+						parsed_request = parse_req(req)
                         url = parsed_request[0]['url']
-                        print "url: ", url
+                        print "url: ", url # -For The Debug-
                         parsed_url = urlparse.urlparse(url)
-                        print "parsed"
+                        print "parsed" # -For The Debug-
                         path = parsed_url.path.lstrip('/') # Delete the '/' from the beginning of the path.
-                        print path
+                        print path # -For The Debug-
                         params = parsed_url.query # The url parameters
-                        print "param: ", params
-                        if params: # Download or registery:
-                            print "params if"
+                        print "param: ", params # -For The Debug-
+						
+                        if params: # If there were url parameters - it means the user either asks for a public folder download or for registry.
+                            print "params if" # -For The Debug-
                             status, path, folder_flag, name, last_update = download_or_register(thread_server, params)
+							
                         else: # Normal 'GET'
-                            print "normal GET"
-                            if path == "favicon.ico":
+                            print "normal GET"  # -For The Record-
+							# Specific cases: #
+                            if path == "favicon.ico": # We deal with favicon specially - the path is needed to be changed
                                 path = "Pages/favicon.ico"
-                            elif path == "Files/client.zip":
-                                print "client if"
-                                client_zip = open("Files/client.zip", 'rb')
-                                print "opened zip"
-                                client_cont = client_zip.read()
-                                print "read cont"
+                            elif path == "Files/client.zip": # That means the Bcloud_installer is requesting for the client program - it needs to be handled a little differently: We first send the length and only after it is approved to be received we send the file itself.
+                                print "client if" # -For The Debug-
+                                client_zip = open("Files/client.zip", 'rb');	print "opened zip" # -For The Debug-
+                                client_cont = client_zip.read();	print "read cont" # -For The Debug-
                                 cont_len = len(client_cont)
-                                client_socket.send(str(cont_len))
-                                print "sent len"
-                                resp = client_socket.recv(3)
-                                print "recved"
-                                if resp == 'ACK':
-                                    client_socket.send(client_cont)
-                                else:
-                                    raise # Shouldn't get here at all...
-                                client_flag = True
-                            if path_exists(path):
+                                client_socket.send(str(cont_len)) '''# Send the length first. '''
+								print "sent len" # -For The Debug-
+                                resp = client_socket.recv(3);	print "received" # -For The Debug-
+                                if resp == 'ACK': # We got the approval,
+                                    client_socket.send(client_cont) # So we send the file.
+                                else: # If it got in here... God knows why...
+                                    raise # And god will help this error.
+                                client_flag = True # So it wont go in to 'send_status()' later.
+							
+							# In general: #
+                            if path_exists(path): # If we are in here - LG!
                                 status = "200"
                             elif path in MOVED.keys():
                                 status = "301"
@@ -189,29 +193,31 @@ def do_work():
                     elif req_type == "POST": # 405 Method Not Allowed
                         status = "405"
                         path = ERROR_405_PATH
-                        #status, path = register(thread_server, parsed_request)
+                        # status, path = register(thread_server, parsed_request)
                     
-                except Exception, e: # That's an Internal Server Error (500)
-                    print "Error", e
+                except Exception, e: # 500 Internal Server Error
+                    print "Error", e # -For The Debug-
                     status = "500"
                     path = ERROR_500_PATH
 
                 finally:
-                    if folder_flag:
+                    if folder_flag: # That means we need to get the folder from the main server and send it:
                         cont = get_folder(thread_server, name)
-                        if cont == "WTF":
+                        if cont == "WTF": # Some error getting the user's folder:
                             send_status(ERROR_404_PATH, "404", client_socket)
-                        else:
+                        else: # The browser will just download what he'll get (as it is defined in the HTML page):
                             client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                             
-                    elif client_flag:
+                    elif client_flag: # It's done...
                         pass
                         
-                    else:
-                        send_status(path, status, client_socket, last_update, name)
+                    else: # normal:
+                        send_status(path, status, client_socket, last_update, name) # last update and name may be None or not None - if they are not None - it will be "noticed" in send_status() and will be handled appropriately. 
         
         
 def make_threads_and_queue(num, size):
+	''' This method makes 'num' Thread waiting to take tasks from a Queue in size 'size'.
+	'''
     global q
     q = Queue.Queue(size)
     for i in xrange(num):
@@ -222,10 +228,12 @@ def make_threads_and_queue(num, size):
 
 ## Main Activity Method: ##
 def run():
+	''' Runs the server.
+	'''
     port = 80
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
-    while True:
+    while True: # Take the first free port after 80 [if it's not free]:
         try:
             server_socket.bind(('0.0.0.0', port))
             break
@@ -235,8 +243,7 @@ def run():
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
-        client_socket, client_addr = server_socket.accept()
-        print "A client accepted" # -For The Record-
+        client_socket, client_addr = server_socket.accept();	print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
 
 
