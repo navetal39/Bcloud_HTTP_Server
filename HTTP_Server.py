@@ -121,9 +121,9 @@ def do_work():
     ''' The method that the Thread does.
     '''
     while True:
-		#  Get task, intial things...:
+		# Get task, intial things...:
         client_socket, client_addr = q.get() #New client to handle!
-        folder_flag = False; client_flag = False; last_update = None # Flags, see use below...
+        folder_flag = False; client_flag = False; last_update = None # Flags, see use below (in the end of method).
         name = "" # So there won't be a "Referenced before assignment error"...
         thread_server = get_server_for_thread() # Getting the object that represents a *client* of the main server.
         
@@ -193,7 +193,6 @@ def do_work():
                     elif req_type == "POST": # 405 Method Not Allowed
                         status = "405"
                         path = ERROR_405_PATH
-                        # status, path = register(thread_server, parsed_request)
                     
                 except Exception, e: # 500 Internal Server Error
                     print "Error", e # -For The Debug-
@@ -201,18 +200,18 @@ def do_work():
                     path = ERROR_500_PATH
 
                 finally:
-                    if folder_flag: # That means we need to get the folder from the main server and send it:
+                    if folder_flag: # That means we need to get the folder from the main server and send it (because it is phase 2):
                         cont = get_folder(thread_server, name)
                         if cont == "WTF": # Some error getting the user's folder:
                             send_status(ERROR_404_PATH, "404", client_socket)
                         else: # The browser will just download what he'll get (as it is defined in the HTML page):
                             client_socket.send('HTTP/1.1 200 OK\r\nContent-Length: {ln}\r\n\r\n{con}'.format(ln=len(cont), con=cont))
                             
-                    elif client_flag: # It's done...
+                    elif client_flag: # It's done... The client program was already sent.
                         pass
                         
                     else: # normal:
-                        send_status(path, status, client_socket, last_update, name) # last update and name may be None or not None - if they are not None - it will be "noticed" in send_status() and will be handled appropriately. 
+                        send_status(path, status, client_socket, last_update, name) # last update and name may be None or not None - if they are not None - it will be "noticed" in send_status() and will be handled appropriately (public folder download phase 1). 
         
         
 def make_threads_and_queue(num, size):
