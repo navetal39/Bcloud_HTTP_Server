@@ -153,9 +153,9 @@ def do_work():
                         print "parsed"
                         path = parsed_url.path.lstrip('/') # Delete the '/' from the beginning of the path.
                         print path
-                        params = parsed_url.query
+                        params = parsed_url.query # The url parameters
                         print "param: ", params
-                        if params: # Download or registery
+                        if params: # Download or registery:
                             print "params if"
                             status, path, folder_flag, name, last_update = download_or_register(thread_server, params)
                         else: # Normal 'GET'
