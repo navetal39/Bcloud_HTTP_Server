@@ -53,23 +53,27 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         else:
             return flag
 			
-    def get_last_update(self, username, folder_name):
+    def get_last_update(self, username, folder_type):
+		''' Receives a username and a folder type (public/private) and returns the last time it was changed (or a flag implying if it was empty or does not exist).
 		'''
-		'''
-        message = "LUD|{}|{}".format(username, folder_name)
+		# Pass mission: #
+        message = "LUD|{}|{}".format(username, folder_type)
         self.connect()
         self.MAIN_SOCKET.send(message)
         data = file_recv(self.MAIN_SOCKET)
         self.disconnect()
-        if data == "EMPTY":
+		# Check status: #
+        if data == "EMPTY": # The folder that it's last update was requested is empty, so who gives.
             return "EMP", None
-        elif data == "NNM":
+        elif data == "NNM": # There is no user, so no folder.
             return "NNM", None
-        elif data == "WTF":
+        elif data == "WTF": # That's 500.
             raise
-        else:
+        else: # Process succeeded and 'data' is a list of '<file_name>:<last_update_in_seconds_since_1970>'.
+			# Find the latest of the list so to know the last time the folder was updated: #
             data_list = data.split('\n')
             times = []
+			## Assemble a list of times: ##
             for pair in data_list:
                 try:
                     times.append(float(pair.split(':')[1]))
@@ -80,9 +84,7 @@ class Server(object): # The HTTP server sees is as a server, the main server see
         
     def get_folder(self, folder_name, count = 0):
         ''' Sends a request to get a specific folder. If it exists it should get a response
-            in the flowing format: "SCS|<DATA>". If it does not it should get "NNM".
-            In the case the folder does not exist this function should load the dedicated
-            HTML file and send it instead.
+            in the flowing format: "SCS|<DATA>". If it does not it should get "NNM" and inform the HTTP server.
         '''
         self.connect()
         self.MAIN_SOCKET.send('GET|{}'.format(folder_name))
