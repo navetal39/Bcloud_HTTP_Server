@@ -121,7 +121,7 @@ def do_work():
     ''' The method that the Thread does.
     '''
     while True:
-		# Get task, intial things...:
+        # Get task, intial things...:
         client_socket, client_addr = q.get() #New client to handle!
         folder_flag = False; client_flag = False; last_update = None # Flags, see use below (in the end of method).
         name = "" # So there won't be a "Referenced before assignment error"...
@@ -130,11 +130,11 @@ def do_work():
         while True:
             try:
                 req = client_socket.recv(4096)
-				print 'got request' # -For The Debug-
+                print 'got request' # -For The Debug-
             except Exception, e: # If there is a problem receiving from the client - we close the connection:
                 print e # -For The Debug-
                 print e.errno # -For The Debug-
-				req = "" # Well actually, we change 'req' to contain nothing so it will be closed as all other connections are.
+                req = "" # Well actually, we change 'req' to contain nothing so it will be closed as all other connections are.
                 
             if req == "": # When a client closes the connection - the server receives an empty string.
                 client_socket.close()
@@ -143,12 +143,12 @@ def do_work():
                 break
             else:
                 try:
-					# Determine request type: #
+                    # Determine request type: #
                     req_type = decide_type(req)
                     if req_type == "GET":
-						# Get ready to handle: #
+                        # Get ready to handle: #
                         print "have a 'GET' request:\n", req # -For The Record-
-						parsed_request = parse_req(req)
+                        parsed_request = parse_req(req)
                         url = parsed_request[0]['url']
                         print "url: ", url # -For The Debug-
                         parsed_url = urlparse.urlparse(url)
@@ -164,24 +164,24 @@ def do_work():
 							
                         else: # Normal 'GET'
                             print "normal GET"  # -For The Record-
-							# Specific cases: #
+                            # Specific cases: #
                             if path == "favicon.ico": # We deal with favicon specially - the path is needed to be changed
                                 path = "Pages/favicon.ico"
                             elif path == "Files/client.zip": # That means the Bcloud_installer is requesting for the client program - it needs to be handled a little differently: We first send the length and only after it is approved to be received we send the file itself.
                                 print "client if" # -For The Debug-
-                                client_zip = open("Files/client.zip", 'rb');	print "opened zip" # -For The Debug-
-                                client_cont = client_zip.read();	print "read cont" # -For The Debug-
+                                client_zip = open("Files/client.zip", 'rb');    print "opened zip" # -For The Debug-
+                                client_cont = client_zip.read();    print "read cont" # -For The Debug-
                                 cont_len = len(client_cont)
                                 client_socket.send(str(cont_len)) '''# Send the length first. '''
-								print "sent len" # -For The Debug-
-                                resp = client_socket.recv(3);	print "received" # -For The Debug-
+                                print "sent len" # -For The Debug-
+                                resp = client_socket.recv(3);   print "received" # -For The Debug-
                                 if resp == 'ACK': # We got the approval,
                                     client_socket.send(client_cont) # So we send the file.
                                 else: # If it got in here... God knows why...
                                     raise # And god will help this error.
                                 client_flag = True # So it wont go in to 'send_status()' later.
 							
-							# In general: #
+                            # In general: #
                             if path_exists(path): # If we are in here - LG!
                                 status = "200"
                             elif path in MOVED.keys():
@@ -215,8 +215,8 @@ def do_work():
         
         
 def make_threads_and_queue(num, size):
-	''' This method makes 'num' Thread waiting to take tasks from a Queue in size 'size'.
-	'''
+    ''' This method makes 'num' Thread waiting to take tasks from a Queue in size 'size'.
+    '''
     global q
     q = Queue.Queue(size)
     for i in xrange(num):
@@ -227,8 +227,8 @@ def make_threads_and_queue(num, size):
 
 ## Main Activity Method: ##
 def run():
-	''' Runs the server.
-	'''
+    ''' Runs the server.
+    '''
     port = 80
     make_threads_and_queue(NUM_OF_THREADS, SIZE_OF_QUEUE)
     server_socket = socket.socket()
@@ -242,7 +242,7 @@ def run():
     print "Running... on port {}".format(port) # -For The Record-
 
     while True:
-        client_socket, client_addr = server_socket.accept();	print "A client accepted" # -For The Record-
+        client_socket, client_addr = server_socket.accept();    print "A client accepted" # -For The Record-
         q.put((client_socket, client_addr))
 
 

@@ -43,9 +43,9 @@ def path_exists(path):
     return isfile(path)
 
 def download_or_register(main_server, params):
-	''' This method receives the url parameter and according to them determines whether it is: the public folder download first phase, the public folder download second phase or registry request.
-	Then it deals with the request appropriately (mostly passes the mission on to the correct place), checks the returned status and informs the HTTP server accordingly with the appropriate path and status code [and a flag (folder_flag) and some data (username and last_update)].
-	'''
+    ''' This method receives the url parameter and according to them determines whether it is: the public folder download first phase, the public folder download second phase or registry request.
+    Then it deals with the request appropriately (mostly passes the mission on to the correct place), checks the returned status and informs the HTTP server accordingly with the appropriate path and status code [and a flag (folder_flag) and some data (username and last_update)].
+    '''
     folder_flag = False # Flag - to return to HTTP server so he'll know what phase is it.
 	last_update = None # So that if it will be assigned - there will be no error.
     try:
@@ -92,8 +92,8 @@ def download_or_register(main_server, params):
     return status, path, folder_flag, params_dict["username"], last_update
 
 def register(main_server, fields_dict):
-	''' The method asks the main server to register the client (according to the details in the parameter) - then it checks the status returned and informs the HTTP server accordingly with the appropriate path and status code.
-	'''
+    ''' The method asks the main server to register the client (according to the details in the parameter) - then it checks the status returned and informs the HTTP server accordingly with the appropriate path and status code.
+    '''
     stat = main_server.create_user(fields_dict['username'],  fields_dict['password'])
 	# The possible statuses (NIU=Name In Use, SCS=Success) are checked: #
     if stat == "NIU":
@@ -108,8 +108,8 @@ def register(main_server, fields_dict):
     return status, path
 
 def get_folder(main_server, name):
-	''' Get the zipped folder from the main_server.
-	'''
+    ''' Get the zipped folder from the main_server.
+    '''
     return main_server.get_folder(name)
 
 
