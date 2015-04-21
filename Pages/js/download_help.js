@@ -1,5 +1,5 @@
 var sIP = location.host; /* <<<<<< This is the server's IP address. <<<<<< */
-if (sIP == "") { sIP = "localhost"; }
+if (sIP == "") { sIP = "localhost"; } // If there is no server IP - use localhost - for checking.
 
 function get_last_update() {
 	var username = document.getElementById('username').innerHTML;

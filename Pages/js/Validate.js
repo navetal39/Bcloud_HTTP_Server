@@ -1,4 +1,5 @@
 function validation(str) {
+	/* Checks whether the string is valid according to our wills.	*/
 	var forbidden = ['|','\\', '/', ':', '*', '?', '"', '<', '>'];
 	
 	if ((str.length < 4) || (str.length > 31)) { return false; }
@@ -13,11 +14,11 @@ function validation(str) {
 }
 
 var sIP = location.host; /* <<<<<< This is the server's IP address. <<<<<< */
-if (sIP == "") { sIP = "localhost"; }
+if (sIP == "") { sIP = "localhost"; } // If there is no server IP - use localhost - for checking.
 
-/* For the FolderDownload page: */
-function checkAndSend1() {
-	
+
+function checkAndSend1() {	
+	/* For the FolderDownload page: */
 	var username = document.getElementById('username').value;
 	
 	var valid = validation(username);
@@ -31,8 +32,8 @@ function checkAndSend1() {
 }
 
 
-/* For the SignUp page: */
 function checkAndSend2() {	
+	/* For the SignUp page: */
 	var username = document.getElementById('username').value;
 	var password = document.getElementById('password').value;
 	
