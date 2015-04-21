@@ -36,8 +36,10 @@ while True:
     sync_time = raw_input("Enter the amount of time you wish to have between syncs, in seconds: ")
     try:
         int(sync_time)
+        if sync_time < 10:
+            raise ValueError
     except ValueError:
-        print "AN INTIGER, NOTHING ELSE!"
+        print "The input must be an intiger, at least 10!"
     else:
         break
 
