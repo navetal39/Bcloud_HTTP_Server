@@ -1,6 +1,5 @@
 # INFO: #
 # No Encryption (tls/ssl).
-# get_folder not tested yet.
 # ===================================
 
 
@@ -9,6 +8,8 @@ from RECURRING_FUNCTIONS import file_recv
 
 
 class Server(object): # The HTTP server sees is as a server, the main server sees it as a client. Relativity! WOOHOO!
+    ''' This class represents a client to the main server that the threads use as an interface to the main server.
+    '''
     def __init__(self, ip, port):
         ''' This method will run every time you boot up the module.
         '''
