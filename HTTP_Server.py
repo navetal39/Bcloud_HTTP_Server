@@ -132,7 +132,7 @@ def do_work():
                 req = client_socket.recv(4096)
                 print 'got request' # -For The Debug-
             except Exception, e: # If there is a problem receiving from the client - we close the connection:
-                print e # -For The Debug-
+                print 'ERROR',e # -For The Debug-
                 print e.errno # -For The Debug-
                 req = "" # Well actually, we change 'req' to contain nothing so it will be closed as all other connections are.
                 
