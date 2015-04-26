@@ -26,12 +26,14 @@ while True:
         program_location += '/BcloudFiles'
         os.makedirs(program_location)
         break
+
 while True:
     sync_location = raw_input("Enter the path for the directory in which you wish to put the Bcloud directory (for sync): ")
     if not os.path.exists(sync_location):
         print "PATH DOES NOT EXIST."
     else:
         break
+        
 while True:
     sync_time = raw_input("Enter the amount of time you wish to have between syncs, in seconds: ")
     try:
@@ -39,7 +41,7 @@ while True:
         if sync_time < 10:
             raise ValueError
     except ValueError:
-        print "The input must be an intiger, at least 10!"
+        print "The input must be an integer, at least 10!"
     else:
         break
 

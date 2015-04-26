@@ -15,13 +15,14 @@ from Utility import *
 ## General: ##
 NUM_OF_THREADS = 20
 SIZE_OF_QUEUE = 40
-PICS_EXTENTIONS = ['.jpeg', '.jpg', '.png', '.gif', '.ico'] # Used later to identify pictures in order to add the speciel HTTP header needed.
-PICS_TYPES = {'.jpeg': 'image/jpeg', '.jpg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.ico': 'image/x-icon'} # Used to ease the process of finding the needed header for that specific image type.
 
 ## Other usefull stuff: ##
 STATUS_LINES = {"200": "HTTP/1.1 200 OK\r\n", "404": "HTTP/1.1 404 Not Found\r\n", "301": "HTTP/1.1 301 Moved Permanently\r\n",
                 "302":"HTTP/1.1 302 Found\r\n", "500": "HTTP/1.1 500 Internal Server Error\r\n", "405": "HTTP/1.1 405 Method Not Allowed"} # Used to ease the process of finding the needed status line for that specific status code.
 MOVED = {"":"Pages/index.htm", "index.htm":"Pages/index.htm", "favicon.ico":"Pages/favicon.ico"} # Pages that need to return a 301 Moved Permanently status line.
+
+PICS_EXTENTIONS = ['.jpeg', '.jpg', '.png', '.gif', '.ico'] # Used later to identify pictures in order to add the speciel HTTP header needed.
+PICS_TYPES = {'.jpeg': 'image/jpeg', '.jpg': 'image/jpeg', '.png': 'image/png', '.gif': 'image/gif', '.ico': 'image/x-icon'} # Used to ease the process of finding the needed header for that specific image type.
 
 
 
