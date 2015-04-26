@@ -172,7 +172,7 @@ def do_work():
                                 client_zip = open("Files/client.zip", 'rb');    print "opened zip" # -For The Debug-
                                 client_cont = client_zip.read();    print "read cont" # -For The Debug-
                                 cont_len = len(client_cont)
-                                client_socket.send(str(cont_len))
+                                client_socket.send(str(cont_len)) # Sending the length first.
                                 print "sent len" # -For The Debug-#
                                 resp = client_socket.recv(3);   print "received" # -For The Debug-
                                 if resp == 'ACK': # We got the approval,
