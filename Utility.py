@@ -70,9 +70,9 @@ def download_or_register(main_server, params):
         
     elif len(params_dict.keys()) == 2 and "username" in params_dict.keys() and "is_approved" in params_dict.keys() : # Download - phase 2 - check whether the user still wants to download, if he does tell that to HTTP server:
         value = params_dict["is_approved"]
-		# Check the client's answer: # 
+        # Check the client's answer: # 
         if value == "YES":
-	    folder_flag = True
+            folder_flag = True
             path = ""; status = "" # Just in case
         elif value == "NO":
             path = ""; status = ""  # Just in case
