@@ -47,7 +47,7 @@ def download_or_register(main_server, params):
     Then it deals with the request appropriately (mostly passes the mission on to the correct place), checks the returned status and informs the HTTP server accordingly with the appropriate path and status code [and a flag (folder_flag) and some data (username and last_update)].
     '''
     folder_flag = False # Flag - to return to HTTP server so he'll know what phase is it.
-	last_update = None # So that if it will be assigned - there will be no error.
+    last_update = None # So that if it will be assigned - there will be no error.
     try:
         params_dict = get_fields_values(params)
     except: # 500 Internal Server Error
@@ -72,7 +72,7 @@ def download_or_register(main_server, params):
         value = params_dict["is_approved"]
 		# Check the client's answer: # 
         if value == "YES":
-			folder_flag = True
+	    folder_flag = True
             path = ""; status = "" # Just in case
         elif value == "NO":
             path = ""; status = ""  # Just in case
