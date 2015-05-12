@@ -124,8 +124,6 @@ def do_work():
     while True:
         # Get task, intial things...:
         client_socket, client_addr = q.get() #New client to handle!
-        folder_flag = False; client_flag = False; last_update = None # Flags, see use below (in the end of method).
-        name = "" # So there won't be a "Referenced before assignment error"...
         thread_server = get_server_for_thread() # Getting the object that represents a *client* of the main server.
         
         while True:
@@ -136,7 +134,9 @@ def do_work():
                 print 'ERROR',e # -For The Debug-
                 print e.errno # -For The Debug-
                 req = "" # Well actually, we change 'req' to contain nothing so it will be closed as all other connections are.
-                
+            folder_flag = False; client_flag = False; last_update = None # Flags, see use below (in the end of method).
+            name = "" # So there won't be a "Referenced before assignment error"...
+            
             if req == "": # When a client closes the connection - the server receives an empty string.
                 client_socket.close()
                 print "Closed connection" # -For The Record-
